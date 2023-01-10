@@ -40,6 +40,8 @@ function App() {
         return 'primary.main'
       case 'learn':
         return 'secondary.main'
+      case 'meeting':
+        return 'error.main'
       case 'game':
         return 'warning.main'
       case 'break':
