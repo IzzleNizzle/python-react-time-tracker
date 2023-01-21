@@ -24,6 +24,9 @@ jobs:
     - name: Login to Docker Registry
       run: echo ${{ secrets.DOCKER_REGISTRY_PASSWORD }} | docker login -u ${{ secrets.DOCKER_REGISTRY_USERNAME }} --password-stdin ${{ secrets.DOCKER_REGISTRY_ADDRESS }}
 
+    - name: Push Docker Image
+      run: docker push ${{ secrets.DOCKER_REGISTRY_ADDRESS }}/pyre-time:$GITHUB_SHA
+
     - name: Deploy to CapRover
       uses: caprover/deploy-from-github@d76580d79952f6841c453bb3ed37ef452b19752c
       with:
