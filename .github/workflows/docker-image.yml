@@ -19,7 +19,7 @@ jobs:
       run: |
         docker build . --file Dockerfile --tag pyre-time:$GITHUB_SHA
         docker tag pyre-time:$GITHUB_SHA ${{ secrets.DOCKER_REGISTRY_ADDRESS }}/pyre-time:$GITHUB_SHA
-        echo "FULL_IMAGE_NAME=pyre-time:$GITHUB_SHA" >> $GITHUB_ENV
+        echo "FULL_IMAGE_NAME=${{ secrets.DOCKER_REGISTRY_ADDRESS }}/pyre-time:$GITHUB_SHA" >> $GITHUB_ENV
 
     - name: Login to Docker Registry
       run: echo ${{ secrets.DOCKER_REGISTRY_PASSWORD }} | docker login -u ${{ secrets.DOCKER_REGISTRY_USERNAME }} --password-stdin ${{ secrets.DOCKER_REGISTRY_ADDRESS }}
