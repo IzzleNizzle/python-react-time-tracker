@@ -101,7 +101,7 @@ function App() {
                                 <AccessTimeIcon />
                             </Avatar>
                         }
-                        title="Time Track"
+                        title="Iz's Time Track"
                         subheader={getFormatedDateString()}
                     />
                     <CardContent>
