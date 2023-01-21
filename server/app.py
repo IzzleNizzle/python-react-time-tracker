@@ -1,12 +1,17 @@
 import psycopg2
-from flask import Flask, request
+from flask import Flask, request, render_template
 import os
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="build/static", template_folder="build")
 
 
 @app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/api/health")
 def hello_world():
     return "<p>Hello, World!</p>"
 
@@ -14,23 +19,27 @@ def hello_world():
 @app.route("/api/time", methods=["POST"])
 def time_receive():
     try:
-        conn = psycopg2.connect(database=os.environ['DB_NAME'],
-                                host=os.environ['DB_HOST'],
-                                user=os.environ['DB_USER'],
-                                password=os.environ['DB_PASS'],
-                                port=os.environ['DB_PORT'])
+        conn = psycopg2.connect(
+            database=os.environ["DB_NAME"],
+            host=os.environ["DB_HOST"],
+            user=os.environ["DB_USER"],
+            password=os.environ["DB_PASS"],
+            port=os.environ["DB_PORT"],
+        )
         json_data = request.get_json()
         cursor = conn.cursor()
         mtn_timestamp = get_time_stamp()
-        if json_data['activity'] is None:
+        if json_data["activity"] is None:
             return "Bad Request", 400
-        cursor.execute("""
-                INSERT INTO public.time_tracker (date, activity)
+        cursor.execute(
+            """
+                INSERT INTO time_tracker.time_tracker (date, activity)
                 VALUES (%s, %s);
                 """,
-                       (mtn_timestamp, json_data['activity']))
+            (mtn_timestamp, json_data["activity"]),
+        )
         conn.commit()
-        return 'OK'
+        return "OK"
     except Exception as err:
         print(err)
         return "Bad Request", 400
@@ -38,18 +47,23 @@ def time_receive():
         cursor.close()
         conn.close()
 
+
 @app.route("/api/time", methods=["GET"])
 def get_times():
     try:
-        conn = psycopg2.connect(database=os.environ['DB_NAME'],
-                                host=os.environ['DB_HOST'],
-                                user=os.environ['DB_USER'],
-                                password=os.environ['DB_PASS'],
-                                port=os.environ['DB_PORT'])
+        conn = psycopg2.connect(
+            database=os.environ["DB_NAME"],
+            host=os.environ["DB_HOST"],
+            user=os.environ["DB_USER"],
+            password=os.environ["DB_PASS"],
+            port=os.environ["DB_PORT"],
+        )
         cursor = conn.cursor()
-        cursor.execute("""
-                select * from public.time_tracker;
-                """)
+        cursor.execute(
+            """
+                select * from time_tracker.time_tracker;
+                """
+        )
         return cursor.fetchall()
     except Exception as err:
         print(err)
@@ -57,6 +71,7 @@ def get_times():
     finally:
         cursor.close()
         conn.close()
+
 
 def get_time_stamp():
     timestamp = datetime.now()

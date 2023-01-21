@@ -5,15 +5,18 @@ import { ThemeProvider } from '@mui/material/styles';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
 import theme from './theme';
+import { SnackbarProvider } from 'notistack';
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
 root.render(
-  <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <App />
-  </ThemeProvider>,
+    <ThemeProvider theme={theme}>
+        <SnackbarProvider maxSnack={3}>
+            <CssBaseline />
+            <App />
+        </SnackbarProvider>
+    </ThemeProvider>,
 );
 
 

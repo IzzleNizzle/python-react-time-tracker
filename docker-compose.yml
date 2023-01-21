@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   server:
-    build: 
+    build:
       context: ./server
       dockerfile: Dockerfile
     networks:
       - postgres
     ports:
-      - 5001:5000
+      - 5000:5000
     environment:
       DB_NAME: postgres
       DB_HOST: postgres
@@ -32,6 +32,7 @@ services:
 
 volumes:
   postgres-data:
+
 
 networks:
   postgres:

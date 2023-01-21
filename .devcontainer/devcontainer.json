@@ -1,40 +1,58 @@
-// Update the VARIANT arg in docker-compose.yml to pick a Python version
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
 {
-	"name": "Python 3 & PostgreSQL",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-	"features": {
-		"ghcr.io/devcontainers/features/node:1": {}
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"ms-python.python",
-				"WakaTime.vscode-wakatime",
-				"rangav.vscode-thunder-client"
-			]
-		}
-	},
-	"remoteUser": "vscode",
-	"remoteEnv": {
-		"WAKATIME_API_KEY": "${localEnv:WAKATIME_API_KEY}",
-		"PORT": "8081"
-	}
-
-	// Features to add to the dev container. More info: https://containers.dev/implementors/features.
-	// "features": {},
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// This can be used to network with other containers or the host.
-	// "forwardPorts": [5000, 5432],
-
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip install --user -r requirements.txt",
-
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+    "name": "Docker in Docker",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/devcontainers/base:bullseye",
+    "runArgs": [
+        "--env-file",
+        ".devcontainer/devcontainer.env"
+    ],
+    "postCreateCommand": {
+        "installLint": "pip install flake8",
+        "installFormatter": "pip install black",
+        "installDeps": "pip install -r ${containerWorkspaceFolder}/server/requirements.txt"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest",
+            "enableNonRootDocker": "true",
+            "moby": "true"
+        },
+        "ghcr.io/devcontainers/features/node:1": {},
+        "ghcr.io/devcontainers/features/python:1": {}
+    },
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // "postCreateCommand": "docker --version",
+    "customizations": {
+        // Configure properties specific to VS Code.
+        "vscode": {
+            // Set *default* container specific settings.json values on container create.
+            "settings": {
+                "python.formatting.provider": "black",
+                "editor.detectIndentation": false,
+                "editor.formatOnSave": true,
+                "editor.insertSpaces": true,
+                "editor.tabSize": 4,
+                "python.linting.flake8Enabled": true,
+                // https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length
+                "python.linting.flake8Args": [
+                    "--ignore=E203",
+                    "--max-line-length=88"
+                ]
+            },
+            // Add the IDs of extensions you want installed when the container is created.
+            "extensions": [
+                "WakaTime.vscode-wakatime",
+                "ms-python.python"
+            ]
+        }
+    },
+    "remoteEnv": {
+        "WAKATIME_API_KEY": "${localEnv:WAKATIME_API_KEY}"
+    }
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
 }
