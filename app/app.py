@@ -1,5 +1,5 @@
 import os
-from flask import Flask, session, redirect, send_file
+from flask import Flask, session, redirect, render_template
 from datetime import timedelta
 
 from app.izauth.cognito import authenticate_with_cognito, logout
