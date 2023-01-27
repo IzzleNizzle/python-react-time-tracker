@@ -1,3 +1,7 @@
 flask
 psycopg2-binary
 pytz
+pytest
+requests
+python-jose[cryptography]
+
