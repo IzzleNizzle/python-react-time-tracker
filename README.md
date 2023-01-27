@@ -22,6 +22,7 @@ COGNITO_USERPOOL_ID=us-east-1_*******
 COGNITO_CLIENT_ID=
 COGNITO_CLIENT_SECRET=
 REDIRECT_URL=
+ENVIRONMENT=develop|production
 ```
 
 ### Commands for building and deploying:
