@@ -24,12 +24,12 @@ WORKDIR /app
 COPY --from=build-stage /app/build /app/build
 
 # Install Flask and other required packages
-COPY ./server/requirements.txt /app
+COPY ./app/requirements.txt /app
 RUN pip install --upgrade pip
 RUN pip install -r /app/requirements.txt
 
 # Copy the flask app files
-COPY ./server/app.py /app
+COPY ./app /app
 
 EXPOSE 5000
 
