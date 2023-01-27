@@ -70,8 +70,8 @@ function App() {
             })
         }).then(response => {
             if(response.redirected) {
-                window.location.href = response.url;
-                // location.reload()
+                // window.location.href = response.url;
+                location.reload()
             }
         })
             .catch(error => console.error(error));
