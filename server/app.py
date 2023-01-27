@@ -1,22 +1,28 @@
-import psycopg2
-from flask import Flask, request, render_template
 import os
-from datetime import datetime
+from flask import Flask, session, redirect, send_file
+from datetime import timedelta
+
+from app.izauth.cognito import authenticate_with_cognito, logout
 
 app = Flask(__name__, static_folder="build/static", template_folder="build")
+app.secret_key = os.environ.get("FLASK_SESSION_SECRET")
+app.permanent_session_lifetime = timedelta(minutes=1)
+app.config["SESSION_PERMANENT"] = False
 
 
 @app.route("/")
+@authenticate_with_cognito
 def index():
     return render_template("index.html")
 
 
 @app.route("/api/health")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return "OK"
 
 
 @app.route("/api/time", methods=["POST"])
+@authenticate_with_cognito
 def time_receive():
     try:
         conn = psycopg2.connect(
@@ -49,6 +55,7 @@ def time_receive():
 
 
 @app.route("/api/time", methods=["GET"])
+@authenticate_with_cognito
 def get_times():
     try:
         conn = psycopg2.connect(
@@ -71,6 +78,19 @@ def get_times():
     finally:
         cursor.close()
         conn.close()
+
+
+@app.route("/sign-in-redirect")
+@authenticate_with_cognito
+def sign_in_redirect():
+    print(f'sign_in_redirect: Logged in as {session["uuid"]}')
+    return redirect("/")
+
+
+@app.route("/logout")
+def user_logout():
+    logout()
+    return "OK"
 
 
 def get_time_stamp():
