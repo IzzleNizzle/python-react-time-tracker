@@ -68,7 +68,13 @@ function App() {
                 timeStamp: getFormatedDateString(),
                 activity
             })
-        });
+        }).then(response => {
+            if(response.redirected) {
+                window.location.href = response.url;
+                // location.reload()
+            }
+        })
+            .catch(error => console.error(error));
     }, [seconds, activity])
 
 
