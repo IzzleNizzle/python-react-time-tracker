@@ -6,7 +6,7 @@ from datetime import timedelta, datetime
 from app.izauth.cognito import authenticate_with_cognito, logout
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
-if ENVIRONMENT == 'develop':
+if ENVIRONMENT == "develop":
     session_lifetime = timedelta(minutes=1)
 else:
     session_lifetime = timedelta(days=1)
@@ -45,10 +45,10 @@ def time_receive():
             return "Bad Request", 400
         cursor.execute(
             """
-                INSERT INTO time_tracker.time_tracker (date, activity)
-                VALUES (%s, %s);
+                INSERT INTO time_tracker.time_tracker (date, activity, cognito_uuid)
+                VALUES (%s, %s, %s);
                 """,
-            (mtn_timestamp, json_data["activity"]),
+            (mtn_timestamp, json_data["activity"], session["uuid"]),
         )
         conn.commit()
         return "OK"
@@ -74,8 +74,10 @@ def get_times():
         cursor = conn.cursor()
         cursor.execute(
             """
-                select * from time_tracker.time_tracker;
-                """
+                select * from time_tracker.time_tracker
+                WHERE cognito_uuid = %s;
+                """,
+            (session["uuid"],),
         )
         return cursor.fetchall()
     except Exception as err:

@@ -15,6 +15,7 @@ COGNITO_APP_REGION = os.environ.get("COGNITO_APP_REGION")
 REDIRECT_URL = os.environ.get("REDIRECT_URL")
 COGNITO_USERPOOL_ID = os.environ.get("COGNITO_USERPOOL_ID")
 
+
 def authenticate_with_cognito(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -37,6 +38,7 @@ def authenticate_with_cognito(f):
         except Exception as error:
             print(f"decorated_function error: {error}")
             return redirect(LOGIN_REDIRECT_URL)
+
     return decorated_function
 
 
@@ -117,9 +119,7 @@ def get_auth_call_incognito(auth_code):
         "code": auth_code,
         "redirect_uri": REDIRECT_URL,
     }
-    cognito_url = (
-        f"https://{COGNITO_APP_DOMAIN}.auth.{COGNITO_APP_REGION}.amazoncognito.com/oauth2/token"
-    )
+    cognito_url = f"https://{COGNITO_APP_DOMAIN}.auth.{COGNITO_APP_REGION}.amazoncognito.com/oauth2/token"
     response = requests.request("POST", cognito_url, headers=headers, params=params)
     if response.status_code == 400 or response.status_code == 500:
         raise ValueError(
