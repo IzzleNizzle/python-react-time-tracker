@@ -7,8 +7,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 
 export default function Selecter({ handleChange, activity }) {
-    console.log({ activity });
-
 
     return (
         <Box sx={{ minWidth: 120 }}>

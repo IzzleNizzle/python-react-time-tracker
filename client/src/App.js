@@ -27,10 +27,6 @@ function App() {
 
     const calcSecondsDistance = (timestamp1, timestamp2) => {
         const difference = Math.abs(timestamp1 - timestamp2);
-        console.log({
-            timestamp1, timestamp2,
-            difference, calc: difference / 1000
-        });
         return Math.round(difference / 1000);
     }
 
@@ -69,8 +65,8 @@ function App() {
                 activity
             })
         }).catch(error => {
-                console.error(error)
-                window.location.reload()
+            console.error(error)
+            window.location.reload()
         });
     }, [seconds, activity])
 
