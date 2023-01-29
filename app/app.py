@@ -4,6 +4,7 @@ from flask import Flask, session, redirect, render_template, request
 from datetime import timedelta, datetime
 
 from app.izauth.cognito import authenticate_with_cognito, logout
+from app.postgres_request.postgres_db import request_template
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
 if ENVIRONMENT == "develop":
@@ -64,28 +65,38 @@ def time_receive():
 @authenticate_with_cognito
 def get_times():
     try:
-        conn = psycopg2.connect(
-            database=os.environ["DB_NAME"],
-            host=os.environ["DB_HOST"],
-            user=os.environ["DB_USER"],
-            password=os.environ["DB_PASS"],
-            port=os.environ["DB_PORT"],
-        )
-        cursor = conn.cursor()
-        cursor.execute(
-            """
+        query = """
                 select * from time_tracker.time_tracker
                 WHERE cognito_uuid = %s;
-                """,
-            (session["uuid"],),
-        )
-        return cursor.fetchall()
+                """
+        params = (session["uuid"],)
+        data = request_template(query, params)
+        return data
     except Exception as err:
         print(err)
         return "Bad Request", 400
-    finally:
-        cursor.close()
-        conn.close()
+
+
+@app.route("/api/daily-time", methods=["GET"])
+@authenticate_with_cognito
+def get_daily_times():
+    try:
+        query = """
+                SELECT  activity,
+                        count(*) as count,
+                        date_trunc('day', "date") as day,
+                        extract(dow from "date") as day_of_week
+                FROM    time_tracker.time_tracker
+                WHERE   cognito_uuid = %s
+                GROUP BY activity, day, day_of_week
+                ORDER BY day DESC;
+                """
+        params = (session["uuid"],)
+        data = request_template(query, params)
+        return data
+    except Exception as err:
+        print(err)
+        return "Bad Request", 400
 
 
 @app.route("/sign-in-redirect")

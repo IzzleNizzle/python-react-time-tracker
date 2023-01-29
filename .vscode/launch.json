@@ -17,7 +17,7 @@
             ],
             "jinja": true,
             "justMyCode": true,
-            "cwd": "${workspaceFolder}/server"
+            "cwd": "${workspaceFolder}/app"
         }
     ]
 }
