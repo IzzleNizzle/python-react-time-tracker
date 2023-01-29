@@ -82,16 +82,25 @@ def get_times():
 def get_daily_times():
     try:
         query = """
-                SELECT  activity,
-                        count(*) as count,
-                        date_trunc('day', "date") as day,
-                        extract(dow from "date") as day_of_week
-                FROM    time_tracker.time_tracker
-                WHERE   cognito_uuid = %s
-                GROUP BY activity, day, day_of_week
-                ORDER BY day DESC;
+                WITH latest_days AS (
+                    SELECT DISTINCT date_trunc('day', "date") AS day
+                    FROM time_tracker.time_tracker
+                    WHERE cognito_uuid = %s
+                    ORDER BY day DESC
+                    LIMIT 7
+                )
+
+                SELECT activity,
+                    count(*) as count,
+                    MAX("date") as date
+                    FROM time_tracker.time_tracker
+                    JOIN latest_days ON latest_days.day = date_trunc('day', time_tracker.time_tracker."date")
+                    where cognito_uuid = %s
+                    GROUP BY activity,day
+                    ORDER BY day DESC;
+
                 """
-        params = (session["uuid"],)
+        params = (session["uuid"], session["uuid"])
         data = request_template(query, params)
         return data
     except Exception as err:
