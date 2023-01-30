@@ -1,7 +1,7 @@
 import psycopg2
 import os
 import pandas as pd
-from flask import Flask, session, redirect, render_template, request
+from flask import Flask, session, redirect, render_template, request, jsonify
 from datetime import timedelta, datetime
 
 from app.izauth.cognito import authenticate_with_cognito, logout
@@ -124,7 +124,7 @@ def get_daily_times():
             "index": result.index,
             "values": result.values,
         }
-        return better_response
+        return jsonify(better_response)
     except Exception as err:
         print(err)
         return "Bad Request", 400
