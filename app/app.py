@@ -79,7 +79,7 @@ def get_times():
 
 
 @app.route("/api/daily-time", methods=["GET"])
-# @authenticate_with_cognito
+@authenticate_with_cognito
 def get_daily_times():
     try:
         query = """
@@ -95,15 +95,18 @@ def get_daily_times():
                     count(*) as count,
                     MAX("date") as date
                     FROM time_tracker.time_tracker
-                    JOIN latest_days ON latest_days.day = date_trunc('day', time_tracker.time_tracker."date")
-                    where cognito_uuid = %s
+                    JOIN latest_days
+                    ON latest_days.day = date_trunc(
+                        'day', time_tracker.time_tracker."date"
+                        )
+                    WHERE cognito_uuid = %s
                     GROUP BY activity,day
                     ORDER BY day DESC;
 
                 """
         params = (
-            "daa38dbb-ee91-4898-b48d-61031c5965ed",
-            "daa38dbb-ee91-4898-b48d-61031c5965ed",
+            session["uuid"],
+            session["uuid"],
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
