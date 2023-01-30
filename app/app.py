@@ -106,21 +106,20 @@ def get_daily_times():
             "daa38dbb-ee91-4898-b48d-61031c5965ed",
         )
         data = request_template(query, params)
-        # dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
-        # data["activity"] = data["activity"].fillna("")
-        # weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
-        # data["weekday"] = weekday_series
-        # data = data.rename(dates)
-        # data = data.sort_values("date")
-        # result = data.pivot_table(
-        #     index="activity",
-        #     columns="weekday",
-        #     values="count",
-        #     fill_value=0,
-        #     sort=False,
-        # )
-        # return result.to_json()
-        return data
+        data = pd.DataFrame(data, columns=["activity", "count", "date"])
+        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
+        weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
+        data["weekday"] = weekday_series
+        data = data.rename(dates)
+        data = data.sort_values("date")
+        result = data.pivot_table(
+            index="activity",
+            columns="weekday",
+            values="count",
+            fill_value=0,
+            sort=False,
+        )
+        return result.to_json()
     except Exception as err:
         print(err)
         return "Bad Request", 400
