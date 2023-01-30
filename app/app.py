@@ -119,7 +119,12 @@ def get_daily_times():
             fill_value=0,
             sort=False,
         )
-        return result.to_json()
+        better_response = {
+            "headers": result.columns,
+            "index": result.index,
+            "values": result.values,
+        }
+        return better_response
     except Exception as err:
         print(err)
         return "Bad Request", 400
