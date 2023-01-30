@@ -1,5 +1,6 @@
 import psycopg2
 import os
+import pandas as pd
 from flask import Flask, session, redirect, render_template, request
 from datetime import timedelta, datetime
 
@@ -102,7 +103,20 @@ def get_daily_times():
                 """
         params = (session["uuid"], session["uuid"])
         data = request_template(query, params)
-        return data
+        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
+        data["activity"] = data["activity"].fillna("")
+        weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
+        data["weekday"] = weekday_series
+        data = data.rename(dates)
+        data = data.sort_values("date")
+        result = data.pivot_table(
+            index="activity",
+            columns="weekday",
+            values="count",
+            fill_value=0,
+            sort=False,
+        )
+        return result.to_json()
     except Exception as err:
         print(err)
         return "Bad Request", 400
