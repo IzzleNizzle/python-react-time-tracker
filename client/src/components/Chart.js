@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -19,6 +19,8 @@ ChartJS.register(
     Tooltip,
     Legend
 );
+
+const DATA = { "headers": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday"], "index": ["learn", "meeting", "code", "break", "game", ""], "values": [[3859, 0, 1741, 1841, 621, 0, 0], [6639, 1763, 0, 0, 0, 0, 364], [7891, 5435, 6633, 12393, 2718, 3021, 18071], [4266, 2995, 9469, 12253, 5482, 1065, 4620], [9551, 8712, 4688, 12172, 0, 3313, 3078], [0, 2004, 536, 279, 112, 1179, 4295]] }
 
 
 const getMonthAndDay = (dateString) => {
@@ -49,53 +51,10 @@ const combineDailyActivity = (arr) => {
     return combinedArr
 }
 
-const graphDataBuilder = (dailyData) => {
 
-    // new approach, data source updated
-
-    // split the data up by date
-    let mainArray = {}
-    dailyData.forEach(element => {
-        const dateString = element[2]
-        const monthDay = getMonthAndDay(dateString)
-        const monthDayString = `${monthDay.month}-${monthDay.day}`
-        if (monthDayString in mainArray) {
-            mainArray[monthDayString].push(element)
-        } else {
-            mainArray[monthDayString] = [element]
-        }
-    });
-
-    // let obj2 = {
-    //     "01-23": [Array(3)],
-    //     "00-24": [Array(3), Array(3), Array(3), Array(3), Array(3), Array(3), Array(3)],
-    //     "02-25": [Array(3), Array(3), Array(3)],
-    //     "00-26": [Array(3), Array(3), Array(3), Array(3), Array(3)],
-    //     "10-27": [Array(3), Array(3), Array(3), Array(3)],
-    //     "00-28": [Array(3), Array(3), Array(3), Array(3)],
-    //     "11-29": [Array(3), Array(3), Array(3), Array(3), Array(3), Array(3)]
-    // };
-
-    // Combine daily data totals
-    const combinedMainArray = []
-    for (let day in mainArray) {
-        combinedMainArray.push([day, combineDailyActivity(mainArray[day])])
-    }
-    let sortedData = combinedMainArray.sort((a, b) => {
-        let aKey = a[0].split('-').join('');
-        let bKey = b[0].split('-').join('');
-        return bKey - aKey;
-    });
-    console.log(sortedData);
-
-
-    // Get data header
-    // Get data labels
-    // Organize data
-}
 
 const labels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
+const colors = ['rgb(255, 99, 132)', 'rgb(75, 192, 192)', 'rgb(53, 162, 235)', 'rgb(255, 99, 132)', 'rgb(75, 192, 192)',]
 export const data = {
     labels,
     datasets: [
@@ -127,7 +86,7 @@ export const data = {
     ],
 };
 export default function App() {
-
+    const [graphData, setGraphData] = useState('')
     const options = {
         plugins: {
             title: {
@@ -145,6 +104,23 @@ export default function App() {
             },
         },
     };
+    const graphDataBuilder = (dailyData) => {
+        const graphData = {
+            labels,
+            datasets: dailyData.index.map((label, i) => {
+                return {
+                    label,
+                    data: dailyData.values[i],
+                    backgroundColor: colors[i % 5]
+                }
+            })
+        }
+        return graphData
+    }
+
+
+    // graphDataBuilder(DATA)
+
 
     useEffect(() => {
         fetch('/api/daily-time', {
@@ -158,13 +134,15 @@ export default function App() {
             .then(res => res.json())
             .then(res => {
                 console.log(res)
-                graphDataBuilder(res)
+                setGraphData(graphDataBuilder(res))
             })
             .catch(error => {
                 console.error(error)
             });
     }, [])
 
-    return <Bar options={options} data={data} />;
+    return <>
+        {graphData && <Bar options={options} data={graphData} />}
+    </>;
 }
 

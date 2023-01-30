@@ -1,7 +1,7 @@
 import psycopg2
 import os
 import pandas as pd
-from flask import Flask, session, redirect, render_template, request, jsonify
+from flask import Flask, session, redirect, render_template, request
 from datetime import timedelta, datetime
 
 from app.izauth.cognito import authenticate_with_cognito, logout
