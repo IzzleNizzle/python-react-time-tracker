@@ -3,7 +3,8 @@
 CREATE TABLE IF NOT EXISTS time_tracker.time_tracker (
 	id 		SERIAL,
 	date	timestamp with time zone NOT NULL DEFAULT NOW(),
-	activity varchar(32)
+	activity varchar(32),
+    cognito_uuid character varying(36)
 );
 
 
@@ -19,5 +20,5 @@ where activity = 'testing'
 order by date desc
 
 
-ALTER TABLE time_tracker.time_tracker
-ADD COLUMN cognito_uuid character varying(36);
+-- ALTER TABLE time_tracker.time_tracker
+-- ADD COLUMN cognito_uuid character varying(36);
