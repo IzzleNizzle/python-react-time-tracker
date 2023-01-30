@@ -120,11 +120,11 @@ def get_daily_times():
             sort=False,
         )
         better_response = {
-            "headers": result.columns,
-            "index": result.index,
-            "values": result.values,
+            "headers": result.columns.tolist(),
+            "index": result.index.tolist(),
+            "values": result.values.tolist(),
         }
-        return jsonify(better_response)
+        return better_response
     except Exception as err:
         print(err)
         return "Bad Request", 400
