@@ -7,11 +7,8 @@ from datetime import timedelta, datetime
 from app.izauth.cognito import authenticate_with_cognito, logout
 from app.postgres_request.postgres_db import request_template
 
-ENVIRONMENT = os.environ.get("ENVIRONMENT")
-if ENVIRONMENT == "develop":
-    session_lifetime = timedelta(minutes=1)
-else:
-    session_lifetime = timedelta(days=1)
+
+session_lifetime = timedelta(days=1)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 app.secret_key = os.environ.get("FLASK_SESSION_SECRET")
 app.permanent_session_lifetime = session_lifetime
