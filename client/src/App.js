@@ -8,6 +8,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Selecter from './components/Selecter'
 import Chart from './components/Chart'
 import FormDialog from './components/FormDialog'
+import FormikArray from './components/FormikArray'
 import Typography from '@mui/material/Typography';
 import { getFormatedDateString } from './utils/util'
 import { useStopwatch } from 'react-timer-hook';
@@ -91,6 +92,7 @@ function App() {
 
     return (
         <>
+            <FormikArray></FormikArray>
             <FormDialog></FormDialog>
             <Container component="main" maxWidth="xs">
                 <Card sx={{
