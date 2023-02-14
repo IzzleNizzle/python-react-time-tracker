@@ -13,12 +13,16 @@ import FormControl from '@mui/material/FormControl';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
+// import { Debug } from './Debug'
 
 
-export default function FormDialog({ open, handleClose, activityList }) {
-    const activities = activityList.map(activity => {
-        return { name: activity }
-    })
+export default function FormDialog({ open, handleClose, activityList, updateActivityList }) {
+    const activities = activityList
+
+    const updateActivityListData = (activityArray) => {
+        updateActivityList(activityArray)
+        console.log({ activityArray })
+    }
 
     return (
         <div>
@@ -26,20 +30,22 @@ export default function FormDialog({ open, handleClose, activityList }) {
                 initialValues={{ activities }}
                 validationSchema={Yup.object({
                     activities: Yup.array().of(
-                        Yup.object({
-                            name: Yup.string().required('Activity Name Required'),
-                        })
+                        Yup.string().required('Activity Name Required')
                     ),
                 })}
-                onSubmit={values => {
+                onSubmit={(values, actions) => {
+                    updateActivityListData(values.activities)
                     setTimeout(() => {
                         alert(JSON.stringify(values, null, 2));
+                        handleClose()
+                        actions.setSubmitting(false)
                     }, 500);
                 }}
             >
                 {({ values, isSubmitting, handleBlur, setFieldValue, errors, touched }) => (
                     <Dialog open={open} onClose={handleClose}>
                         <Form>
+                            {/* <Debug /> */}
                             <DialogTitle>Edit Activities</DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
@@ -60,7 +66,7 @@ export default function FormDialog({ open, handleClose, activityList }) {
                                                         index={index}
                                                     >
                                                         <Box sx={{ display: 'flex', alignItems: 'flex-center' }}>
-                                                            <Field name={`activities[${index}].name`}>
+                                                            <Field name={`activities[${index}]`}>
                                                                 {({ field, }) => (
                                                                     <>
                                                                         <TextField
@@ -71,8 +77,8 @@ export default function FormDialog({ open, handleClose, activityList }) {
                                                                             placeholder="Activity"
                                                                             value={activity}
                                                                             {...field}
-                                                                            error={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index].name}
-                                                                            helperText={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index].name}
+                                                                            error={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index]}
+                                                                            helperText={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index]}
                                                                         />
                                                                     </>
                                                                 )}
@@ -89,7 +95,7 @@ export default function FormDialog({ open, handleClose, activityList }) {
                                             <Box sx={{ display: 'flex', alignItems: 'flex-center', justifyContent: 'right' }}>
                                                 <IconButton
                                                     aria-label="toggle password visibility"
-                                                    onClick={() => push({ name: '' })}
+                                                    onClick={() => push('')}
                                                 >
                                                     <AddCircleIcon fontSize='large'
                                                     />
