@@ -8,11 +8,12 @@ import CardHeader from '@mui/material/CardHeader';
 import Selecter from './components/Selecter'
 import Chart from './components/Chart'
 import FormDialog from './components/FormDialog'
-import FormikArray from './components/FormikArray'
 import Typography from '@mui/material/Typography';
 import { getFormatedDateString } from './utils/util'
 import { useStopwatch } from 'react-timer-hook';
 import { useSnackbar } from 'notistack';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 import "./app.css"
 
 
@@ -55,22 +56,22 @@ function App() {
 
     const { seconds } = useStopwatch({ autoStart: true });
 
-    useEffect(() => {
-        fetch('/api/time', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                timeStamp: getFormatedDateString(),
-                activity
-            })
-        }).catch(error => {
-            console.error(error)
-            window.location.reload()
-        });
-    }, [seconds, activity])
+    // useEffect(() => {
+    // fetch('/api/time', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json'
+    //     },
+    // body: JSON.stringify({
+    //     timeStamp: getFormatedDateString(),
+    //     activity
+    // })
+    // }).catch(error => {
+    //     console.error(error)
+    //     window.location.reload()
+    // });
+    // }, [seconds, activity])
 
 
     const chooseBackgroundColor = () => {
@@ -90,10 +91,75 @@ function App() {
         }
     }
 
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const [activityList, setActivityList] = useState([]);
+
+    const getActivityList = () => {
+        fetch('/api/activity-list', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(resp => resp.json())
+            .then(resp => {
+                setActivityList(resp.data)
+            }).catch(error => {
+                console.log(error)
+                console.error(error)
+                // window.location.reload()
+            });
+    }
+
+    const updateActivityList = (activityListArray) => {
+        fetch('/api/activity-list', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                activityList: activityListArray
+            })
+        })
+            .then(resp => resp.json())
+            .then(resp => {
+                setActivityList(resp.data)
+            }).catch(error => {
+                console.log(error)
+                console.error(error)
+                // window.location.reload()
+            });
+    }
+
+    useEffect(getActivityList, [])
+
+    const dummyDataPersonalActivities = [
+        'Coding',
+        'Learning',
+        'Gaming',
+        'Meeting',
+        'Break'
+    ]
+
     return (
         <>
-            <FormikArray></FormikArray>
-            <FormDialog></FormDialog>
+            <FormDialog
+                open={open}
+                handleClose={handleClose}
+                activityList={dummyDataPersonalActivities}
+                updateActivityList={updateActivityList}
+            />
             <Container component="main" maxWidth="xs">
                 <Card sx={{
                     marginTop: 8,
@@ -106,6 +172,13 @@ function App() {
                         }
                         title="Iz's Time Track"
                         subheader={getFormatedDateString()}
+                        action={
+                            <IconButton aria-label="settings"
+                                onClick={handleClickOpen}
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        }
                     />
                     <CardContent>
                         <Typography component="p">

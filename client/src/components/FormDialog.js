@@ -13,34 +13,17 @@ import FormControl from '@mui/material/FormControl';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import { Debug } from '../components/Debug';
 
-const initialValues = {
-    activities: [
-        {
-            name: '',
-        },
-    ],
-};
 
-export default function FormDialog() {
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
+export default function FormDialog({ open, handleClose, activityList }) {
+    const activities = activityList.map(activity => {
+        return { name: activity }
+    })
 
     return (
         <div>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Open form dialog
-            </Button>
             <Formik
-                initialValues={initialValues}
+                initialValues={{ activities }}
                 validationSchema={Yup.object({
                     activities: Yup.array().of(
                         Yup.object({
@@ -67,11 +50,14 @@ export default function FormDialog() {
                                         <React.Fragment>
                                             {values.activities &&
                                                 values.activities.length > 0 &&
-                                                values.activities.map((friend, index) => (
-                                                    <FormControl fullWidth sx={{
-                                                        my: 2,
-                                                        display: 'flex',
-                                                    }}
+                                                values.activities.map((activity, index) => (
+                                                    <FormControl
+                                                        fullWidth
+                                                        sx={{
+                                                            my: 2,
+                                                            display: 'flex',
+                                                        }}
+                                                        index={index}
                                                     >
                                                         <Box sx={{ display: 'flex', alignItems: 'flex-center' }}>
                                                             <Field name={`activities[${index}].name`}>
@@ -83,6 +69,7 @@ export default function FormDialog() {
                                                                             size="small"
                                                                             type="text"
                                                                             placeholder="Activity"
+                                                                            value={activity}
                                                                             {...field}
                                                                             error={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index].name}
                                                                             helperText={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index].name}
@@ -94,8 +81,7 @@ export default function FormDialog() {
                                                                 aria-label="toggle password visibility"
                                                                 onClick={() => remove(index)}
                                                             >
-                                                                <DeleteIcon
-                                                                />
+                                                                <DeleteIcon />
                                                             </IconButton>
                                                         </Box>
                                                     </FormControl>
@@ -112,10 +98,6 @@ export default function FormDialog() {
                                         </React.Fragment>
                                     )}
                                 </FieldArray>
-                                <button type="submit" disabled={isSubmitting}>
-                                    Invite
-                                </button>
-                                <Debug />
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={handleClose}>Cancel</Button>
