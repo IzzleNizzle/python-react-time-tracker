@@ -149,7 +149,7 @@ function App() {
         'Learning',
         'Gaming',
         'Meeting',
-        'Break'
+        'Break',
     ]
 
     return (

@@ -31,7 +31,7 @@ export default function FormDialog({ open, handleClose, activityList, updateActi
                 validationSchema={Yup.object({
                     activities: Yup.array().of(
                         Yup.string().required('Activity Name Required')
-                    ),
+                    ).max(12, "12 Activities max")
                 })}
                 onSubmit={(values, actions) => {
                     updateActivityListData(values.activities)
@@ -77,14 +77,14 @@ export default function FormDialog({ open, handleClose, activityList, updateActi
                                                                             placeholder="Activity"
                                                                             value={activity}
                                                                             {...field}
-                                                                            error={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index]}
-                                                                            helperText={(touched?.activities?.[index] && errors?.activities?.[index]) && errors.activities[index]}
+                                                                            error={(touched?.activities?.[index] && errors?.activities?.[index]) && ((typeof errors.activities === 'string') ? errors?.activities : errors?.activities?.[index])}
+                                                                            helperText={(touched?.activities?.[index] && errors?.activities?.[index]) && ((typeof errors.activities === 'string') ? errors?.activities : errors?.activities?.[index])}
                                                                         />
                                                                     </>
                                                                 )}
                                                             </Field>
                                                             <IconButton
-                                                                aria-label="toggle password visibility"
+                                                                aria-label="remove activity"
                                                                 onClick={() => remove(index)}
                                                             >
                                                                 <DeleteIcon />
@@ -94,7 +94,7 @@ export default function FormDialog({ open, handleClose, activityList, updateActi
                                                 ))}
                                             <Box sx={{ display: 'flex', alignItems: 'flex-center', justifyContent: 'right' }}>
                                                 <IconButton
-                                                    aria-label="toggle password visibility"
+                                                    aria-label="add new activity"
                                                     onClick={() => push('')}
                                                 >
                                                     <AddCircleIcon fontSize='large'
