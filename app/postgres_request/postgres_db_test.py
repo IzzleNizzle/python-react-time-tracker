@@ -1,6 +1,6 @@
 import pytest
 
-from app.postgres_request.postgres_db import conn_pool
+from app.postgres_request.postgres_db import get_pg_connection, request_template
 
 
 @pytest.mark.parametrize(
@@ -12,18 +12,13 @@ from app.postgres_request.postgres_db import conn_pool
     ],
 )
 def test_easy(monkeypatch, test_input, expected):
-    # Arrange
-    monkeypatch.setenv("some_env", "na for this test")
-
-    # Act
-    # actual = testing_easy(test_input)
-    conn = conn_pool.getconn()
-    cursor = conn.cursor()
-    query = """
+    try:
+        query = """
                 select * from time_tracker.time_tracker
                 LIMIT 100;
                 """
-    cursor.execute(query)
-    print(cursor.fetchall())
-    # Assert
-    # assert actual == expected
+        resp = request_template(query, tuple())
+        print(resp)
+
+    except Exception as err:
+        print(err)
