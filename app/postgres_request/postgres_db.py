@@ -1,6 +1,16 @@
 import psycopg2
 import os
 
+conn_pool = psycopg2.pool.SimpleConnectionPool(
+    0,
+    100,
+    database=os.environ["DB_NAME"],
+    host=os.environ["DB_HOST"],
+    user=os.environ["DB_USER"],
+    password=os.environ["DB_PASS"],
+    port=os.environ["DB_PORT"],
+)
+
 
 def request_template(query, params):
     try:
