@@ -1,7 +1,7 @@
-import psycopg2
+from psycopg2 import pool
 import os
 
-conn_pool = psycopg2.pool.SimpleConnectionPool(
+conn_pool = pool.SimpleConnectionPool(
     0,
     100,
     database=os.environ["DB_NAME"],
@@ -33,3 +33,7 @@ def request_template(query, params):
     finally:
         cursor.close()
         conn.close()
+
+
+def testing_easy(string1):
+    return string1 + "!"
