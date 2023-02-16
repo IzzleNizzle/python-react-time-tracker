@@ -33,7 +33,3 @@ def request_template(query, params):
     finally:
         cursor.close()
         conn.close()
-
-
-def testing_easy(string1):
-    return string1 + "!"

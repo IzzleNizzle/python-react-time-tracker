@@ -1,6 +1,6 @@
 import pytest
 
-from app.postgres_request.postgres_db import testing_easy, conn_pool
+from app.postgres_request.postgres_db import conn_pool
 
 
 @pytest.mark.parametrize(
@@ -16,7 +16,7 @@ def test_easy(monkeypatch, test_input, expected):
     monkeypatch.setenv("some_env", "na for this test")
 
     # Act
-    actual = testing_easy(test_input)
+    # actual = testing_easy(test_input)
     conn = conn_pool.getconn()
     cursor = conn.cursor()
     query = """
@@ -26,4 +26,4 @@ def test_easy(monkeypatch, test_input, expected):
     cursor.execute(query)
     print(cursor.fetchall())
     # Assert
-    assert actual == expected
+    # assert actual == expected
