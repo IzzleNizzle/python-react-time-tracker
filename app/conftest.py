@@ -13,7 +13,7 @@ from app.postgres_request.postgres_queries import (
 
 
 @pytest.fixture()
-def trying_fixture():
+def postgres_seed_data_fixture():
     """Seed db before tests, delete after."""
     # Clean Tables
     delete_table_data("time_tracker", "time_tracker")
