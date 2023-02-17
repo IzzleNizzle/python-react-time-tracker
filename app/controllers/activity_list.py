@@ -2,6 +2,16 @@ from psycopg2.extras import execute_values
 from app.postgres_request.postgres_db import request_template, get_pg_connection
 
 
+def get_activity_list(uuid):
+    query = """
+        select activity from time_tracker.activity_list
+        WHERE cognito_uuid = %s;
+        """
+    params = (uuid,)
+    data = request_template(query, params)
+    return [activity[0] for activity in data]
+
+
 def update_user_activity_list(uuid, activity_list):
     try:
         clear_user_activity_list(uuid)

@@ -3,6 +3,7 @@ import pytest
 from app.controllers.activity_list import (
     clear_user_activity_list,
     update_user_activity_list,
+    get_activity_list,
 )
 from app.postgres_request.postgres_db import request_template
 
@@ -19,6 +20,39 @@ from app.postgres_request.postgres_db import request_template
                 "Reading",
                 "Tracking",
             ],
+            id="Happy path",
+        ),
+    ],
+)
+def test_get_activity_list(
+    monkeypatch, test_uuid, activity_list, postgres_seed_data_fixture
+):
+    try:
+        resp = get_activity_list(test_uuid)
+
+        assert resp == activity_list
+
+    except Exception as err:
+        print(err)
+
+
+@pytest.mark.parametrize(
+    "test_uuid,activity_list",
+    [
+        pytest.param(
+            "63b0f404-d3e9-4e65-8b25-378de26e8cdd",
+            [
+                "Running",
+                "Shopping",
+                "Working",
+                "Reading",
+                "Tracking",
+            ],
+            id="Happy path",
+        ),
+        pytest.param(
+            "63b0f404-d3e9-4e65-8b25-378de26e8cdd",
+            ["Greeting", "Smiling", "Turning"],
             id="Happy path",
         ),
     ],

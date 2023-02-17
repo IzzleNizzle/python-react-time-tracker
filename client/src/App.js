@@ -56,22 +56,22 @@ function App() {
 
     const { seconds } = useStopwatch({ autoStart: true });
 
-    // useEffect(() => {
-    // fetch('/api/time', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json'
-    //     },
-    // body: JSON.stringify({
-    //     timeStamp: getFormatedDateString(),
-    //     activity
-    // })
-    // }).catch(error => {
-    //     console.error(error)
-    //     window.location.reload()
-    // });
-    // }, [seconds, activity])
+    useEffect(() => {
+        fetch('/api/time', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                timeStamp: getFormatedDateString(),
+                activity
+            })
+        }).catch(error => {
+            console.error(error)
+            window.location.reload()
+        });
+    }, [seconds, activity])
 
 
     const chooseBackgroundColor = () => {
@@ -144,22 +144,15 @@ function App() {
 
     useEffect(getActivityList, [])
 
-    const dummyDataPersonalActivities = [
-        'Coding',
-        'Learning',
-        'Gaming',
-        'Meeting',
-        'Break',
-    ]
 
     return (
         <>
-            <FormDialog
+            {activityList.length > 0 && <FormDialog
                 open={open}
                 handleClose={handleClose}
-                activityList={dummyDataPersonalActivities}
+                activities={activityList}
                 updateActivityList={updateActivityList}
-            />
+            />}
             <Container component="main" maxWidth="xs">
                 <Card sx={{
                     marginTop: 8,
@@ -184,10 +177,12 @@ function App() {
                         <Typography component="p">
                             Current: {timeDifference(Date.now(), changedTime)}
                         </Typography>
-                        <Selecter
+                        {activityList.length > 0 && <Selecter
                             handleChange={handleChange}
                             activity={activity}
-                        />
+                            activities={activityList}
+                        />}
+
                     </CardContent>
                 </Card>
             </Container>

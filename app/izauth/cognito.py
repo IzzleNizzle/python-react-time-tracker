@@ -41,6 +41,7 @@ def authenticate_with_cognito(func):
 
     @wraps(func)
     def plain_wrapper(*args, **kwargs):
+        session["uuid"] = "63b0f404-d3e9-4e65-8b25-378de26e8cdd"
         return func(*args, **kwargs)
 
     environment = os.environ.get("ENVIRONMENT")

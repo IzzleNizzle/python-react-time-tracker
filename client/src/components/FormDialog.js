@@ -16,8 +16,7 @@ import * as Yup from 'yup';
 // import { Debug } from './Debug'
 
 
-export default function FormDialog({ open, handleClose, activityList, updateActivityList }) {
-    const activities = activityList
+export default function FormDialog({ open, handleClose, activities, updateActivityList }) {
 
     const updateActivityListData = (activityArray) => {
         updateActivityList(activityArray)
@@ -36,7 +35,6 @@ export default function FormDialog({ open, handleClose, activityList, updateActi
                 onSubmit={(values, actions) => {
                     updateActivityListData(values.activities)
                     setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
                         handleClose()
                         actions.setSubmitting(false)
                     }, 500);

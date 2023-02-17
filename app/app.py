@@ -6,7 +6,7 @@ from datetime import timedelta, datetime
 
 from app.izauth.cognito import authenticate_with_cognito, logout
 from app.postgres_request.postgres_db import request_template
-
+from app.controllers.activity_list import update_user_activity_list, get_activity_list
 
 session_lifetime = timedelta(days=1)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
@@ -70,6 +70,32 @@ def get_times():
         params = (session["uuid"],)
         data = request_template(query, params)
         return data
+    except Exception as err:
+        print(err)
+        return "Bad Request", 400
+
+
+@app.route("/api/activity-list", methods=["GET"])
+@authenticate_with_cognito
+def get_activity_list_items():
+    try:
+        activity_list = get_activity_list(session["uuid"])
+        return {"data": activity_list}
+    except Exception as err:
+        print(err)
+        return "Bad Request", 400
+
+
+@app.route("/api/activity-list", methods=["POST"])
+@authenticate_with_cognito
+def update_activity_list_items():
+    try:
+        json_data = request.get_json()
+        if json_data["activityList"] is None:
+            return "Bad Request", 400
+        update_user_activity_list(session["uuid"], json_data["activityList"])
+        activity_list = get_activity_list(session["uuid"])
+        return {"data": activity_list}
     except Exception as err:
         print(err)
         return "Bad Request", 400
