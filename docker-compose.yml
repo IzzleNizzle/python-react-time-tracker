@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   server:
@@ -20,7 +20,7 @@ services:
     image: postgres
     restart: always
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ./postgresql:/docker-entrypoint-initdb.d
     networks:
       - postgres
     ports:
@@ -31,7 +31,6 @@ services:
       POSTGRES_PASSWORD: postgres
 
   pgadmin:
-    container_name: pgadmin4_container
     image: dpage/pgadmin4:latest
     restart: always
     environment:
@@ -40,12 +39,11 @@ services:
     networks:
       - postgres
     ports:
-      - "5050:80"
+      - "5051:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
 volumes:
-  postgres-data:
   pgadmin-data:
 
 

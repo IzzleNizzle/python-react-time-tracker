@@ -7,10 +7,13 @@ import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Selecter from './components/Selecter'
 import Chart from './components/Chart'
+import FormDialog from './components/FormDialog'
 import Typography from '@mui/material/Typography';
 import { getFormatedDateString } from './utils/util'
 import { useStopwatch } from 'react-timer-hook';
 import { useSnackbar } from 'notistack';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 import "./app.css"
 
 
@@ -88,8 +91,68 @@ function App() {
         }
     }
 
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const [activityList, setActivityList] = useState([]);
+
+    const getActivityList = () => {
+        fetch('/api/activity-list', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(resp => resp.json())
+            .then(resp => {
+                setActivityList(resp.data)
+            }).catch(error => {
+                console.log(error)
+                console.error(error)
+                // window.location.reload()
+            });
+    }
+
+    const updateActivityList = (activityListArray) => {
+        fetch('/api/activity-list', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                activityList: activityListArray
+            })
+        })
+            .then(resp => resp.json())
+            .then(resp => {
+                setActivityList(resp.data)
+            }).catch(error => {
+                console.log(error)
+                console.error(error)
+                // window.location.reload()
+            });
+    }
+
+    useEffect(getActivityList, [])
+
+
     return (
         <>
+            {activityList.length > 0 && <FormDialog
+                open={open}
+                handleClose={handleClose}
+                activities={activityList}
+                updateActivityList={updateActivityList}
+            />}
             <Container component="main" maxWidth="xs">
                 <Card sx={{
                     marginTop: 8,
@@ -102,15 +165,24 @@ function App() {
                         }
                         title="Iz's Time Track"
                         subheader={getFormatedDateString()}
+                        action={
+                            <IconButton aria-label="settings"
+                                onClick={handleClickOpen}
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        }
                     />
                     <CardContent>
                         <Typography component="p">
                             Current: {timeDifference(Date.now(), changedTime)}
                         </Typography>
-                        <Selecter
+                        {activityList.length > 0 && <Selecter
                             handleChange={handleChange}
                             activity={activity}
-                        />
+                            activities={activityList}
+                        />}
+
                     </CardContent>
                 </Card>
             </Container>

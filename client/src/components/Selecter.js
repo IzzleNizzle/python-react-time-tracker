@@ -6,7 +6,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 
-export default function Selecter({ handleChange, activity }) {
+export default function Selecter({ handleChange, activity, activities }) {
 
     return (
         <Box sx={{ minWidth: 120 }}>
@@ -17,11 +17,7 @@ export default function Selecter({ handleChange, activity }) {
                     name="radio-buttons-group"
                     onChange={handleChange}
                 >
-                    <FormControlLabel value="code" control={<Radio />} label="Coding" />
-                    <FormControlLabel value="learn" control={<Radio />} label="Learning" />
-                    <FormControlLabel value="game" control={<Radio />} label="Gaming" />
-                    <FormControlLabel value="meeting" control={<Radio />} label="Meeting" />
-                    <FormControlLabel value="break" control={<Radio />} label="Break" />
+                    {activities.map((act, index) => <FormControlLabel key={index} value={act} control={<Radio />} label={act} />)}
                 </RadioGroup>
             </FormControl>
         </Box>
