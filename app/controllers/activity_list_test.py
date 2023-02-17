@@ -1,6 +1,7 @@
 import pytest
 
 from app.controllers.activity_list import ateta
+from app.postgres_request.postgres_db import request_template
 
 
 @pytest.mark.parametrize(
@@ -11,8 +12,9 @@ from app.controllers.activity_list import ateta
         pytest.param("angry", "angry!", id="Happy path"),
     ],
 )
-def test_test(monkeypatch, test_input, expected):
+def test_test(monkeypatch, test_input, expected, trying_fixture):
     try:
+        request_template("select * from time_tracker.time_tracker", tuple())
         resp = ateta()
         assert resp == expected
     except Exception as err:

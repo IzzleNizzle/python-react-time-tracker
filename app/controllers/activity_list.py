@@ -20,8 +20,7 @@ def update_user_activity_list(uuid, activity_list):
 def clear_user_activity_list(uuid):
     try:
         query = """
-                select * from time_tracker.time_tracker
-                LIMIT 100;
+                DELETE FROM time_tracker.activity_list WHERE cognito_uuid = %s;
                 """
         args = (uuid,)
         resp = request_template(query, args)
