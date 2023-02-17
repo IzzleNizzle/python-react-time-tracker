@@ -1,6 +1,6 @@
 import pytest
 
-from app.controllers.activity_list import test
+from app.controllers.activity_list import ateta
 
 
 @pytest.mark.parametrize(
@@ -13,7 +13,7 @@ from app.controllers.activity_list import test
 )
 def test_test(monkeypatch, test_input, expected):
     try:
-        resp = test()
+        resp = ateta()
         assert resp == expected
     except Exception as err:
         print(err)

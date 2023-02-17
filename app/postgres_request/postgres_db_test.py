@@ -1,6 +1,6 @@
 import pytest
 
-from app.postgres_request.postgres_db import get_pg_connection, request_template
+from app.postgres_request.postgres_db import request_template
 
 
 @pytest.mark.parametrize(
