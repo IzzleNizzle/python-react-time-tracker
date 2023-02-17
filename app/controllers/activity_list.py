@@ -28,7 +28,3 @@ def clear_user_activity_list(uuid):
 
     except Exception as err:
         print(err)
-
-
-def ateta():
-    pass
