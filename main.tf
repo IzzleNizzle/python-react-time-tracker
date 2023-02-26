@@ -13,12 +13,42 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-0e2162f7f3582e92f"
-  instance_type = "t2.micro"
+resource "aws_dynamodb_table_item" "time_tracker_db" {
+  table_name = aws_dynamodb_table.time_tracker_db.name
+  hash_key   = aws_dynamodb_table.time_tracker_db.hash_key
+  range_key  = aws_dynamodb_table.time_tracker_db.range_key
 
+  item = <<ITEM
+{
+  "User": {"S": "user123"},
+  "Timestamp": {"S": "2022-12-12"},
+  "Activity": {"S": "Coding"}
+}
+ITEM
+
+}
+
+resource "aws_dynamodb_table" "time_tracker_db" {
+  name           = "time_tracker_db"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
   tags = {
-    Name  = var.instance_name
-    World = "terraform-testing"
+    Environment = "Production"
+    Name        = var.instance_name
+    World       = "time-tracker"
   }
+  hash_key  = "User"
+  range_key = "Timestamp"
+
+  attribute {
+    name = "User"
+    type = "S"
+  }
+
+  attribute {
+    name = "Timestamp"
+    type = "S"
+  }
+
 }
