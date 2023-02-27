@@ -52,3 +52,30 @@ resource "aws_dynamodb_table" "time_tracker_db" {
   }
 
 }
+
+# Create an IAM role for Lambda function
+resource "aws_iam_role" "lambda_execution_role" {
+  name = "lambda_execution_role"
+  tags = {
+    Environment = "Production"
+    World       = "time-tracker"
+  }
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Attach the necessary policies to the IAM role
+resource "aws_iam_role_policy_attachment" "lambda_execution_role_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_execution_role.name
+}
