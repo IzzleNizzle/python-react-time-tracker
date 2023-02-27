@@ -79,3 +79,20 @@ resource "aws_iam_role_policy_attachment" "lambda_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   role       = aws_iam_role.lambda_execution_role.name
 }
+
+# Create a Lambda function
+resource "aws_lambda_function" "my_lambda_function" {
+  function_name    = "my_lambda_function"
+  role             = aws_iam_role.lambda_execution_role.arn
+  handler          = "index.handler"
+  runtime          = "nodejs14.x"
+  filename         = "lambda_test/function.zip"
+  source_code_hash = filebase64sha256("lambda_test/function.zip")
+  tags             = { Environment = "Production" }
+
+  environment {
+    variables = {
+      TABLE_NAME = aws_dynamodb_table.time_tracker_db.name
+    }
+  }
+}
