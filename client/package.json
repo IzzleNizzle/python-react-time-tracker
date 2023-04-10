@@ -2,7 +2,7 @@
     "name": "timetracker",
     "version": "0.1.0",
     "private": true,
-    "proxy": "http://127.0.0.1:5000",
+    "proxy": "http://172.17.0.1:5000",
     "homepage": "https://time.concept.izzlenizzle.dev",
     "dependencies": {
         "@cubejs-client/core": "^0.31.35",
@@ -20,6 +20,7 @@
         "react": "^18.2.0",
         "react-chartjs-2": "^5.2.0",
         "react-dom": "^18.2.0",
+        "react-router-dom": "^6.10.0",
         "react-scripts": "5.0.1",
         "react-timer-hook": "^3.0.5",
         "web-vitals": "^2.1.4",

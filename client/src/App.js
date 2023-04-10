@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -6,6 +7,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Selecter from './components/Selecter'
+import MainAppBar from './components/MainAppBar'
 import Chart from './components/Chart'
 import FormDialog from './components/FormDialog'
 import Typography from '@mui/material/Typography';
@@ -17,7 +19,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import "./app.css"
 
 
-function App() {
+function HomePage() {
     const [activity, setActivity] = useState('');
     const [changedTime, setChangedTime] = useState(Date.now());
     const { enqueueSnackbar } = useSnackbar();
@@ -147,6 +149,7 @@ function App() {
 
     return (
         <>
+        <MainAppBar/>
             {activityList.length > 0 && <FormDialog
                 open={open}
                 handleClose={handleClose}
@@ -190,6 +193,19 @@ function App() {
                 <Chart></Chart>
             </Container>
         </>
+    );
+}
+
+function App() {
+    return (
+        <BrowserRouter>
+            <Routes >
+                <Route path="/view" element={<HomePage/>} />
+                <Route path="/track" element={<HomePage/>} />
+                <Route path="/" element={<HomePage/>} />
+                {/* Add more routes here */}
+            </Routes >
+        </BrowserRouter>
     );
 }
 
