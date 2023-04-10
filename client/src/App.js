@@ -8,6 +8,8 @@ import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Selecter from './components/Selecter'
 import MainAppBar from './components/MainAppBar'
+import Profile from './pages/Profile'
+import Dashboard from './pages/Dashboard'
 import Chart from './components/Chart'
 import FormDialog from './components/FormDialog'
 import Typography from '@mui/material/Typography';
@@ -119,7 +121,6 @@ function HomePage() {
             }).catch(error => {
                 console.log(error)
                 console.error(error)
-                // window.location.reload()
             });
     }
 
@@ -140,7 +141,6 @@ function HomePage() {
             }).catch(error => {
                 console.log(error)
                 console.error(error)
-                // window.location.reload()
             });
     }
 
@@ -149,7 +149,7 @@ function HomePage() {
 
     return (
         <>
-        <MainAppBar/>
+
             {activityList.length > 0 && <FormDialog
                 open={open}
                 handleClose={handleClose}
@@ -199,11 +199,12 @@ function HomePage() {
 function App() {
     return (
         <BrowserRouter>
+            <MainAppBar />
             <Routes >
-                <Route path="/view" element={<HomePage/>} />
-                <Route path="/track" element={<HomePage/>} />
-                <Route path="/" element={<HomePage/>} />
-                {/* Add more routes here */}
+                <Route path="/view" element={<Profile />} />
+                <Route path="/track" element={<HomePage />} />
+                <Route path="/track2" element={<Dashboard />} />
+                <Route path="/" element={<HomePage />} />
             </Routes >
         </BrowserRouter>
     );
