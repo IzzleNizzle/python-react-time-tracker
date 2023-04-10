@@ -6,7 +6,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Selecter from '../components/Selecter';
-import Chart from '../components/Chart';
 import FormDialog from '../components/FormDialog';
 import Typography from '@mui/material/Typography';
 import { getFormatedDateString } from '../utils/util';
@@ -175,9 +174,6 @@ export default function HomePage() {
 
                     </CardContent>
                 </Card>
-            </Container>
-            <Container component="main" maxWidth="lg">
-                <Chart></Chart>
             </Container>
         </>
     );

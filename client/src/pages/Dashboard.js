@@ -9,7 +9,7 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import Chart from '../components/Chart';
 
 const timeFrames = [
   { value: 'daily', label: 'Daily' },
@@ -23,14 +23,6 @@ const DashboardPage = () => {
   const handleTimeFrameChange = (event) => {
     setTimeFrame(event.target.value);
   };
-
-  const data = [
-    // Replace this array with your actual chart data
-    { name: 'A', value: 100 },
-    { name: 'B', value: 200 },
-    { name: 'C', value: 300 },
-    { name: 'D', value: 400 },
-  ];
 
   return (
     <Container maxWidth="lg">
@@ -49,22 +41,12 @@ const DashboardPage = () => {
           </Select>
         </FormControl>
         <Grid container spacing={3}>
-          {[1, 2, 3].map((chart) => (
-            <Grid item xs={12} md={6} lg={4} key={chart}>
-              <Typography variant="h6" gutterBottom>
-                Chart {chart}
-              </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                  <Line type="monotone" dataKey="value" stroke="#8884d8" />
-                  <CartesianGrid stroke="#ccc" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                </LineChart>
-              </ResponsiveContainer>
-            </Grid>
-          ))}
+          <Grid item xs={12} md={12}>
+            <Typography variant="h6" gutterBottom>
+              Chart
+            </Typography>
+            <Chart></Chart>
+          </Grid>
         </Grid>
       </Box>
     </Container>
