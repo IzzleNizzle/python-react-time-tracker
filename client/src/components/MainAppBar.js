@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
 const pages = ['Track', 'View'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Logout'];
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -166,7 +166,12 @@ function ResponsiveAppBar() {
                         >
                             {settings.map((setting) => (
                                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
+                                    <Link
+                                        style={{ color: 'inherit', textDecoration: 'none' }}
+                                        to={`/${setting}`}>
+                                        <Typography textAlign="center">{setting}</Typography>
+                                    </Link>
+
                                 </MenuItem>
                             ))}
                         </Menu>
