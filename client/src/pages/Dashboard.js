@@ -42,10 +42,7 @@ const DashboardPage = () => {
         </FormControl>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
-            <Typography variant="h6" gutterBottom>
-              Chart
-            </Typography>
-            <Chart></Chart>
+            <Chart />
           </Grid>
         </Grid>
       </Box>
