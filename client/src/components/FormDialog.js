@@ -13,7 +13,6 @@ import FormControl from '@mui/material/FormControl';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Formik, Field, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
-// import { Debug } from './Debug'
 
 
 export default function FormDialog({ open, handleClose, activities, updateActivityList }) {
