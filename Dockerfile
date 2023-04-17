@@ -16,7 +16,7 @@ COPY ./client .
 # Build the React app
 RUN npm run build
 
-FROM python:3.9.16
+FROM python:3.11.3
 
 WORKDIR /app
 
