@@ -1,11 +1,10 @@
 import psycopg2
 import os
-import pandas as pd
 from flask import Flask, session, redirect, render_template, request
 from datetime import timedelta, datetime
 
 from app.izauth.cognito import authenticate_with_cognito, logout
-from app.postgres_request.postgres_db import request_template
+from app.controllers.time_tracker import get_daily, get_weekly, get_monthly
 from app.controllers.activity_list import update_user_activity_list, get_activity_list
 
 session_lifetime = timedelta(days=1)
@@ -59,17 +58,19 @@ def time_receive():
         conn.close()
 
 
-@app.route("/api/time", methods=["GET"])
+@app.route("/api/time/<string:timeframe>")
 @authenticate_with_cognito
-def get_times():
+def get_times(timeframe):
     try:
-        query = """
-                select * from time_tracker.time_tracker
-                WHERE cognito_uuid = %s;
-                """
-        params = (session["uuid"],)
-        data = request_template(query, params)
-        return data
+        match timeframe:
+            case "daily":
+                return get_daily()
+            case "weekly":
+                return get_weekly()
+            case "monthly":
+                return get_monthly()
+            case _:
+                return "Bad Request", 400
     except Exception as err:
         print(err)
         return "Bad Request", 400
@@ -96,61 +97,6 @@ def update_activity_list_items():
         update_user_activity_list(session["uuid"], json_data["activityList"])
         activity_list = get_activity_list(session["uuid"])
         return {"data": activity_list}
-    except Exception as err:
-        print(err)
-        return "Bad Request", 400
-
-
-@app.route("/api/daily-time", methods=["GET"])
-@authenticate_with_cognito
-def get_daily_times():
-    try:
-        query = """
-                WITH latest_days AS (
-                    SELECT DISTINCT date_trunc('day', "date") AS day
-                    FROM time_tracker.time_tracker
-                    WHERE cognito_uuid = %s
-                    ORDER BY day DESC
-                    LIMIT 7
-                )
-
-                SELECT activity,
-                    count(*) as count,
-                    MAX("date") as date
-                    FROM time_tracker.time_tracker
-                    JOIN latest_days
-                    ON latest_days.day = date_trunc(
-                        'day', time_tracker.time_tracker."date"
-                        )
-                    WHERE cognito_uuid = %s
-                    GROUP BY activity,day
-                    ORDER BY day DESC;
-
-                """
-        params = (
-            session["uuid"],
-            session["uuid"],
-        )
-        data = request_template(query, params)
-        data = pd.DataFrame(data, columns=["activity", "count", "date"])
-        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
-        weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
-        data["weekday"] = weekday_series
-        data = data.rename(dates)
-        data = data.sort_values("date")
-        result = data.pivot_table(
-            index="activity",
-            columns="weekday",
-            values="count",
-            fill_value=0,
-            sort=False,
-        )
-        better_response = {
-            "headers": result.columns.tolist(),
-            "index": result.index.tolist(),
-            "values": result.values.tolist(),
-        }
-        return better_response
     except Exception as err:
         print(err)
         return "Bad Request", 400

@@ -57,7 +57,7 @@ export default function App() {
 
 
     useEffect(() => {
-        fetch('/api/daily-time', {
+        fetch('/api/time/weekly', {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
