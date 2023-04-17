@@ -1,5 +1,5 @@
 # Used for running server in devcontainer
-FROM python
+FROM python:3.11.3
 
 WORKDIR /app
 
