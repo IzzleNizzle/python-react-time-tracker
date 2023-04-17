@@ -11,6 +11,7 @@ import {
   Card, CardContent
 } from '@mui/material';
 import Chart from '../components/Chart';
+import { getFormatedTimeFromSeconds } from '../utils/util';
 
 const timeFrames = [
   { value: 'hourly', label: 'Hourly' },
@@ -18,22 +19,6 @@ const timeFrames = [
   { value: 'monthly', label: 'Monthly' },
 ];
 
-function formatTime(seconds) {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-
-  let timeString = "";
-  if (hours > 0) {
-    timeString += `${hours} hour${hours > 1 ? "s" : ""}, `;
-  }
-  if (minutes > 0) {
-    timeString += `${minutes} minute${minutes > 1 ? "s" : ""}, `;
-  }
-  timeString += `${remainingSeconds} second${remainingSeconds > 1 ? "s" : ""}`;
-
-  return timeString;
-}
 
 const DailyAggregate = ({ header, data }) => {
   // sort data by duration
@@ -44,7 +29,7 @@ const DailyAggregate = ({ header, data }) => {
       <Typography variant="h5">{header}</Typography>
       {sortedData.map(([activity, duration]) => (
         <Typography key={activity}>
-          {activity}: {formatTime(duration)}
+          {activity}: {getFormatedTimeFromSeconds(duration)}
         </Typography>
       ))}
     </CardContent>
@@ -60,7 +45,7 @@ const TotalAggregate = ({ data }) => {
       <Typography variant="h5">Totals</Typography>
       {sortedData.map(([activity, duration]) => (
         <Typography key={activity}>
-          {activity}: {formatTime(duration)}
+          {activity}: {getFormatedTimeFromSeconds(duration)}
         </Typography>
       ))}
     </CardContent>

@@ -9,3 +9,20 @@ export const getFormatedDateString = () => {
     const dateString = `${padL(dt.getMonth() + 1)}/${padL(dt.getDate())}/${dt.getFullYear()} ${padL(dt.getHours())}:${padL(dt.getMinutes())}:${padL(dt.getSeconds())}`
     return dateString
 }
+
+export const getFormatedTimeFromSeconds = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    let timeString = "";
+    if (hours > 0) {
+        timeString += `${hours} hour${hours > 1 ? "s" : ""}, `;
+    }
+    if (minutes > 0) {
+        timeString += `${minutes} minute${minutes > 1 ? "s" : ""}, `;
+    }
+    timeString += `${remainingSeconds} second${remainingSeconds > 1 ? "s" : ""}`;
+
+    return timeString;
+}
