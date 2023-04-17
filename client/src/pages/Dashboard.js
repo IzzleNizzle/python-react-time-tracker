@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Typography,
@@ -8,6 +8,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Card, CardContent, Stack
 } from '@mui/material';
 import Chart from '../components/Chart';
 
@@ -17,11 +18,111 @@ const timeFrames = [
   { value: 'monthly', label: 'Monthly' },
 ];
 
+const DailyAggregate = ({ header, data }) => (
+  <Card>
+    <CardContent>
+      <Typography variant="h5">{header}</Typography>
+      {Object.entries(data).map(([activity, duration]) => (
+        <Typography key={activity}>
+          {activity}: {duration}
+        </Typography>
+      ))}
+    </CardContent>
+  </Card>
+);
+
+const TotalAggregate = ({data}) => (
+  <Card>
+    <CardContent>
+      <Typography variant="h5">Monthly Aggregate</Typography>
+      {Object.entries(data).map(([activity, duration]) => (
+        <Typography key={activity}>
+          {activity}: {duration}
+        </Typography>
+      ))}
+    </CardContent>
+  </Card>
+);
+
+
 const DashboardPage = () => {
   const [timeFrame, setTimeFrame] = useState('hourly');
+  const [graphData, setGraphData] = useState('')
+  const [plainRenderDataSingle, setPlainRenderDataSingle] = useState([])
+  const [plainRenderDataTotal, setPlainRenderDataTotal] = useState({})
 
   const handleTimeFrameChange = (event) => {
     setTimeFrame(event.target.value);
+  };
+
+
+
+
+  useEffect(() => {
+    fetch(`/api/time/${timeFrame}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        setGraphData(res)
+        setPlainRenderDataSingle(singleDataFactory(res))
+        setPlainRenderDataTotal(dataAggregateFactory(res))
+      })
+      .catch(error => {
+        console.error(error)
+      });
+  }, [timeFrame])
+
+
+  const singleDataFactory = (data) => {
+    const singleDataArray = []
+    data.headers.forEach((entry, headersIndex) => {
+      const singleData = {}
+
+      if (!singleData[entry]) {
+        singleData[entry] = {}
+      }
+
+      data.index.forEach((activity, index) => {
+        const duration = data.values[index][headersIndex]
+        singleData[entry][activity] = duration
+      })
+      singleDataArray.push(singleData)
+    })
+    return singleDataArray
+  }
+
+
+
+  const dataAggregateFactory = (data) => {
+    const index = data.index;
+    const values = data.values;
+    const result = {};
+
+    for (let i = 0; i < index.length; i++) {
+      const key = index[i];
+      const value = values[i].reduce((acc, curr) => {
+        return acc + curr
+      }, 0);
+      if (key && value) {
+        result[key] = value.toString();
+      }
+    }
+
+    return result;
+  }
+
+
+  const dataAggregate = {
+    Gaming: '4hrs 15mins',
+    Break: '4hrs 20mins',
+    Work: '4hrs 20mins',
   };
 
   return (
@@ -42,11 +143,21 @@ const DashboardPage = () => {
         </FormControl>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
-            <Chart 
+            <Chart
+              graphData={graphData}
               timeFrame={timeFrame}
             />
           </Grid>
         </Grid>
+        <Stack spacing={2}>
+          {plainRenderDataSingle.length > 0 && plainRenderDataSingle.map((singleData) => {
+            const keyName = Object.keys(singleData)[0]
+            const data = singleData[keyName]
+            return <DailyAggregate key={keyName} header={keyName} data={data} />
+          }
+          )}
+          <TotalAggregate data={plainRenderDataTotal} />
+        </Stack>
       </Box>
     </Container>
   );

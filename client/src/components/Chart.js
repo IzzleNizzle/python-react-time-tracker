@@ -22,8 +22,7 @@ ChartJS.register(
 
 const colors = ['rgb(255, 99, 132)', 'rgb(75, 192, 192)', 'rgb(53, 162, 235)', 'rgb(255, 99, 132)', 'rgb(75, 192, 192)',]
 
-export default function Chart({ timeFrame }) {
-    const [graphData, setGraphData] = useState('')
+export default function Chart({ graphData }) {
     const options = {
         plugins: {
             title: {
@@ -41,47 +40,23 @@ export default function Chart({ timeFrame }) {
             },
         },
     };
-    const graphDataBuilder = (dailyData) => {
-        const graphData = {
-            labels: dailyData.headers,
-            datasets: dailyData.index.map((label, i) => {
+    const graphDataBuilder = (rawGraphData) => {
+        const organizedGraphData = {
+            labels: rawGraphData.headers,
+            datasets: rawGraphData.index.map((label, i) => {
                 return {
                     label,
-                    data: dailyData.values[i],
+                    data: rawGraphData.values[i],
                     backgroundColor: colors[i % 5]
                 }
             })
         }
-        return graphData
+        return organizedGraphData
     }
 
 
-    useEffect(() => {
-        fetch(`/api/time/${timeFrame}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-
-        })
-            .then(res => res.json())
-            .then(res => {
-                console.log(res)
-                setGraphData(graphDataBuilder(res))
-            })
-            .catch(error => {
-                console.error(error)
-            });
-    }, [timeFrame])
-
-    useEffect(() => {
-        console.log({ graphData });
-    }, [graphData])
-
-
     return <>
-        {graphData && <Bar options={options} data={graphData} />}
+        {graphData && <Bar options={options} data={graphDataBuilder(graphData)} />}
     </>;
 }
 
