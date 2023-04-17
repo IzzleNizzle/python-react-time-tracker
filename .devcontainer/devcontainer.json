@@ -8,8 +8,11 @@
     "onCreateCommand": {
         "installLint": "pip install flake8",
         "installFormatter": "pip install black",
-        "installDeps": "pip install -r ${containerWorkspaceFolder}/app/requirements.txt"
+        "installDeps": "pip install -r ${containerWorkspaceFolder}/app/requirements.txt",
+        "terraformAutocomplete": "terraform -install-autocomplete"
     },
+    // For a list of devcontainer features:
+    // https://containers.dev/features
     "features": {
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
             "version": "latest",
@@ -17,7 +20,9 @@
             "moby": "true"
         },
         "ghcr.io/devcontainers/features/node:1": {},
-        "ghcr.io/devcontainers/features/python:1": {}
+        "ghcr.io/devcontainers/features/python:1": {},
+        "ghcr.io/devcontainers/features/terraform:1": {},
+        "ghcr.io/devcontainers/features/aws-cli:1": {}
     },
     "customizations": {
         "vscode": {

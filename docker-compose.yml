@@ -15,6 +15,7 @@ services:
       DB_USER: postgres
       DB_PASS: postgres
       DB_PORT: 5432
+      FLASK_SESSION_SECRET: supersecret
 
   postgres:
     image: postgres

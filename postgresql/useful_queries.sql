@@ -22,3 +22,66 @@ SELECT * FROM time_tracker.time_tracker WHERE date("date") = '2023-01-15';
 
 
 
+
+-- Queries used for the dashboard
+-- weekly
+WITH latest_days AS (
+    SELECT DISTINCT date_trunc('day', "date") AS day
+    FROM time_tracker.time_tracker
+    WHERE cognito_uuid = '63b0f404-d3e9-4e65-8b25-378de26e8cdd'
+    ORDER BY day DESC
+    LIMIT 7
+)
+
+SELECT activity,
+    count(*) as count,
+    MAX("date") as date
+    FROM time_tracker.time_tracker
+    JOIN latest_days
+    ON latest_days.day = date_trunc(
+        'day', time_tracker.time_tracker."date"
+        )
+    WHERE cognito_uuid = '63b0f404-d3e9-4e65-8b25-378de26e8cdd'
+    GROUP BY activity,day
+    ORDER BY day DESC;
+
+-- daily
+WITH latest_hours AS (
+    SELECT DISTINCT date_trunc('hour', "date") AS hour
+    FROM time_tracker.time_tracker
+    WHERE cognito_uuid = '63b0f404-d3e9-4e65-8b25-378de26e8cdd'
+    ORDER BY hour DESC
+    LIMIT 24
+)
+
+SELECT activity,
+    count(*) as count,
+    MAX("date") as date
+    FROM time_tracker.time_tracker
+    JOIN latest_hours
+    ON latest_hours.hour = date_trunc(
+        'hour', time_tracker.time_tracker."date"
+        )
+    WHERE cognito_uuid = '63b0f404-d3e9-4e65-8b25-378de26e8cdd'
+    GROUP BY activity,hour
+    ORDER BY hour DESC;
+
+-- monthly
+WITH latest_days AS (
+    SELECT DISTINCT date_trunc('day', "date") AS day
+    FROM time_tracker.time_tracker
+    WHERE cognito_uuid = '63b0f404-d3e9-4e65-8b25-378de26e8cdd'
+    ORDER BY day DESC
+    LIMIT 30
+)
+SELECT activity,
+    count(*) as count,
+    MAX("date") as date
+    FROM time_tracker.time_tracker
+    JOIN latest_days
+    ON latest_days.day = date_trunc(
+        'day', time_tracker.time_tracker."date"
+        )
+    WHERE cognito_uuid = '63b0f404-d3e9-4e65-8b25-378de26e8cdd'
+    GROUP BY activity,day
+    ORDER BY day DESC;
