@@ -22,7 +22,7 @@ ChartJS.register(
 
 const colors = ['rgb(255, 99, 132)', 'rgb(75, 192, 192)', 'rgb(53, 162, 235)', 'rgb(255, 99, 132)', 'rgb(75, 192, 192)',]
 
-export default function App() {
+export default function Chart({ timeFrame }) {
     const [graphData, setGraphData] = useState('')
     const options = {
         plugins: {
@@ -57,7 +57,7 @@ export default function App() {
 
 
     useEffect(() => {
-        fetch('/api/time/weekly', {
+        fetch(`/api/time/${timeFrame}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -73,7 +73,7 @@ export default function App() {
             .catch(error => {
                 console.error(error)
             });
-    }, [])
+    }, [timeFrame])
 
     useEffect(() => {
         console.log({ graphData });

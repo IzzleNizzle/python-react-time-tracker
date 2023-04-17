@@ -12,13 +12,13 @@ import {
 import Chart from '../components/Chart';
 
 const timeFrames = [
-  { value: 'daily', label: 'Daily' },
+  { value: 'hourly', label: 'Hourly' },
   { value: 'weekly', label: 'Weekly' },
   { value: 'monthly', label: 'Monthly' },
 ];
 
 const DashboardPage = () => {
-  const [timeFrame, setTimeFrame] = useState('daily');
+  const [timeFrame, setTimeFrame] = useState('hourly');
 
   const handleTimeFrameChange = (event) => {
     setTimeFrame(event.target.value);
@@ -42,7 +42,9 @@ const DashboardPage = () => {
         </FormControl>
         <Grid container spacing={3}>
           <Grid item xs={12} md={12}>
-            <Chart />
+            <Chart 
+              timeFrame={timeFrame}
+            />
           </Grid>
         </Grid>
       </Box>

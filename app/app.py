@@ -4,7 +4,7 @@ from flask import Flask, session, redirect, render_template, request
 from datetime import timedelta, datetime
 
 from app.izauth.cognito import authenticate_with_cognito, logout
-from app.controllers.time_tracker import get_daily, get_weekly, get_monthly
+from app.controllers.time_tracker import get_hourly, get_weekly, get_monthly
 from app.controllers.activity_list import update_user_activity_list, get_activity_list
 
 session_lifetime = timedelta(days=1)
@@ -63,8 +63,8 @@ def time_receive():
 def get_times(timeframe):
     try:
         match timeframe:
-            case "daily":
-                return get_daily()
+            case "hourly":
+                return get_hourly()
             case "weekly":
                 return get_weekly()
             case "monthly":
