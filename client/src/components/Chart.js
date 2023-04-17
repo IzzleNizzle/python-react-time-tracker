@@ -9,6 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { getFormatedTimeFromSeconds } from '../utils/util';
 
 ChartJS.register(
     CategoryScale,
@@ -20,7 +21,8 @@ ChartJS.register(
 );
 
 
-const colors = ['rgb(255, 99, 132)', 'rgb(75, 192, 192)', 'rgb(53, 162, 235)', 'rgb(255, 99, 132)', 'rgb(75, 192, 192)',]
+
+const colors = ['rgb(252 111 142)', 'rgb(75, 192, 192)', 'rgb(53, 162, 235)', 'rgb(252 111 142)', 'rgb(75, 192, 192)','rgb(0 63 111)', 'rgb(184 5 190)']
 
 export default function Chart({ graphData }) {
     const options = {
@@ -39,6 +41,16 @@ export default function Chart({ graphData }) {
                 stacked: true,
             },
         },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    footer: (tooltipItems) => {
+                        const seconds = tooltipItems[0].raw
+                        return getFormatedTimeFromSeconds(seconds)
+                    },
+                }
+            }
+        }
     };
     const graphDataBuilder = (rawGraphData) => {
         const organizedGraphData = {
@@ -47,7 +59,7 @@ export default function Chart({ graphData }) {
                 return {
                     label,
                     data: rawGraphData.values[i],
-                    backgroundColor: colors[i % 5]
+                    backgroundColor: colors[i % colors.length]
                 }
             })
         }

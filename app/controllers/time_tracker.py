@@ -34,6 +34,7 @@ def get_hourly():
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
         dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
+        data["activity"] = data["activity"].replace("", "None")
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
         data["weekday"] = weekday_series
         data = data.rename(dates)
@@ -88,6 +89,7 @@ def get_weekly():
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
         dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
+        data["activity"] = data["activity"].replace("", "None")
         data["weekday"] = weekday_series
         data = data.rename(dates)
         data = data.sort_values("date")
@@ -143,6 +145,7 @@ def get_monthly():
         data["weekday"] = weekday_series
         data = data.rename(dates)
         data = data.sort_values("date")
+        data["activity"] = data["activity"].replace("", "None")
         result = data.pivot_table(
             index="activity",
             columns="weekday",
