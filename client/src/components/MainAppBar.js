@@ -12,7 +12,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
 
 const pages = ['Track', 'View'];
 const settings = ['Profile', 'Logout'];
@@ -41,7 +41,7 @@ function ResponsiveAppBar() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    <MoreTimeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
 
                     <Typography
                         variant="h6"
@@ -59,7 +59,7 @@ function ResponsiveAppBar() {
                         <Link
                             style={{ color: 'inherit', textDecoration: 'none' }}
                             to={`/`}>
-                            LOGO
+                            TRACKTIME
                         </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -102,7 +102,7 @@ function ResponsiveAppBar() {
                             ))}
                         </Menu>
                     </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                    <MoreTimeIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 
                     <Typography
                         variant="h5"
@@ -121,7 +121,7 @@ function ResponsiveAppBar() {
                         <Link
                             style={{ color: 'inherit', textDecoration: 'none' }}
                             to={`/`}>
-                            LOGO
+                            TRACKTIME
                         </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
