@@ -8,7 +8,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Card, CardContent, Stack
+  Card, CardContent
 } from '@mui/material';
 import Chart from '../components/Chart';
 

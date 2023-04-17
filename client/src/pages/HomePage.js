@@ -142,7 +142,6 @@ export default function HomePage() {
 
     return (
         <>
-
             {activityList.length > 0 && <FormDialog
                 open={open}
                 handleClose={handleClose}
@@ -150,7 +149,7 @@ export default function HomePage() {
                 updateActivityList={updateActivityList} />}
             <Container component="main" maxWidth="xs">
                 <Card sx={{
-                    marginTop: 8,
+                    marginY: 8,
                 }}>
                     <CardHeader
                         avatar={<Avatar sx={{ bgcolor: chooseBackgroundColor() }} aria-label="time">
