@@ -139,7 +139,7 @@ def get_monthly():
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
         dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
-        weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
+        weekday_series = pd.to_datetime(data["date"]).dt.strftime("%m-%d - %A")
         data["weekday"] = weekday_series
         data = data.rename(dates)
         data = data.sort_values("date")
