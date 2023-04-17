@@ -158,6 +158,9 @@ const DashboardPage = () => {
           </Grid>
         </Grid>
         <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <TotalAggregate data={plainRenderDataTotal} />
+          </Grid>
           {plainRenderDataSingle.length > 0 && plainRenderDataSingle.map((singleData) => {
             const keyName = Object.keys(singleData)[0]
             const data = singleData[keyName]
@@ -166,9 +169,6 @@ const DashboardPage = () => {
             </Grid>
           }
           )}
-          <Grid item xs={12} md={4}>
-            <TotalAggregate data={plainRenderDataTotal} />
-          </Grid>
         </Grid>
       </Box>
     </Container>
