@@ -18,35 +18,58 @@ const timeFrames = [
   { value: 'monthly', label: 'Monthly' },
 ];
 
-const DailyAggregate = ({ header, data }) => (
-  <Card>
+function formatTime(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  let timeString = "";
+  if (hours > 0) {
+    timeString += `${hours} hour${hours > 1 ? "s" : ""}, `;
+  }
+  if (minutes > 0) {
+    timeString += `${minutes} minute${minutes > 1 ? "s" : ""}, `;
+  }
+  timeString += `${remainingSeconds} second${remainingSeconds > 1 ? "s" : ""}`;
+
+  return timeString;
+}
+
+const DailyAggregate = ({ header, data }) => {
+  // sort data by duration
+  const sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
+
+  return <Card>
     <CardContent>
       <Typography variant="h5">{header}</Typography>
-      {Object.entries(data).map(([activity, duration]) => (
+      {sortedData.map(([activity, duration]) => (
         <Typography key={activity}>
-          {activity}: {duration}
+          {activity}: {formatTime(duration)}
         </Typography>
       ))}
     </CardContent>
   </Card>
-);
+};
 
-const TotalAggregate = ({data}) => (
-  <Card>
+const TotalAggregate = ({ data }) => {
+  // sort data by duration
+  const sortedData = Object.entries(data).sort((a, b) => b[1] - a[1]);
+
+  return <Card>
     <CardContent>
-      <Typography variant="h5">Monthly Aggregate</Typography>
-      {Object.entries(data).map(([activity, duration]) => (
+      <Typography variant="h5">Totals</Typography>
+      {sortedData.map(([activity, duration]) => (
         <Typography key={activity}>
-          {activity}: {duration}
+          {activity}: {formatTime(duration)}
         </Typography>
       ))}
     </CardContent>
   </Card>
-);
+}
 
 
 const DashboardPage = () => {
-  const [timeFrame, setTimeFrame] = useState('hourly');
+  const [timeFrame, setTimeFrame] = useState('weekly');
   const [graphData, setGraphData] = useState('')
   const [plainRenderDataSingle, setPlainRenderDataSingle] = useState([])
   const [plainRenderDataTotal, setPlainRenderDataTotal] = useState({})
@@ -149,15 +172,19 @@ const DashboardPage = () => {
             />
           </Grid>
         </Grid>
-        <Stack spacing={2}>
+        <Grid container spacing={3}>
           {plainRenderDataSingle.length > 0 && plainRenderDataSingle.map((singleData) => {
             const keyName = Object.keys(singleData)[0]
             const data = singleData[keyName]
-            return <DailyAggregate key={keyName} header={keyName} data={data} />
+            return <Grid item xs={12} md={4}>
+              <DailyAggregate key={keyName} header={keyName} data={data} />
+            </Grid>
           }
           )}
-          <TotalAggregate data={plainRenderDataTotal} />
-        </Stack>
+          <Grid item xs={12} md={4}>
+            <TotalAggregate data={plainRenderDataTotal} />
+          </Grid>
+        </Grid>
       </Box>
     </Container>
   );
