@@ -14,11 +14,11 @@ app.permanent_session_lifetime = session_lifetime
 app.config["SESSION_PERMANENT"] = False
 
 
-@app.route("/")
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
 @authenticate_with_cognito
-def index():
-    return render_template("index.html")
-
+def index(path):
+    return render_template('index.html')
 
 @app.route("/api/health")
 def hello_world():
