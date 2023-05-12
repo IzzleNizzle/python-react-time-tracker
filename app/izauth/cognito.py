@@ -14,6 +14,7 @@ COGNITO_CLIENT_SECRET = os.environ.get("COGNITO_CLIENT_SECRET")
 COGNITO_APP_REGION = os.environ.get("COGNITO_APP_REGION")
 REDIRECT_URL = os.environ.get("REDIRECT_URL")
 COGNITO_USERPOOL_ID = os.environ.get("COGNITO_USERPOOL_ID")
+ENVIRONMENT = os.environ.get("ENVIRONMENT")
 
 
 def authenticate_with_cognito(func):
@@ -44,8 +45,7 @@ def authenticate_with_cognito(func):
         session["uuid"] = "63b0f404-d3e9-4e65-8b25-378de26e8cdd"
         return func(*args, **kwargs)
 
-    environment = os.environ.get("ENVIRONMENT")
-    if environment == "production":
+    if ENVIRONMENT == "production":
         return decorated_function
     else:
         return plain_wrapper

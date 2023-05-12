@@ -1,7 +1,15 @@
 import psycopg2
 import os
-from flask import Flask, session, redirect, render_template, request
+from flask import (
+    Flask,
+    session,
+    redirect,
+    send_from_directory,
+    render_template,
+    request,
+)
 from datetime import timedelta, datetime
+from werkzeug.utils import secure_filename
 
 from app.izauth.cognito import authenticate_with_cognito, logout
 from app.controllers.time_tracker import get_hourly, get_weekly, get_monthly
@@ -14,11 +22,16 @@ app.permanent_session_lifetime = session_lifetime
 app.config["SESSION_PERMANENT"] = False
 
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
 @authenticate_with_cognito
-def index(path):
-    return render_template('index.html')
+def serve(path):
+    path = secure_filename(path)
+    if path and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return render_template("index.html")
+
 
 @app.route("/api/health")
 def hello_world():
