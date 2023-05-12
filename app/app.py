@@ -27,8 +27,8 @@ app.config["SESSION_PERMANENT"] = False
 @authenticate_with_cognito
 def serve(path):
     path = secure_filename(path)
-    if path and os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
+    if path and os.path.exists(os.path.join(app.template_folder, path)):
+        return send_from_directory(app.template_folder, path)
     else:
         return render_template("index.html")
 
