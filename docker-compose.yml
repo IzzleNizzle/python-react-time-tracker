@@ -2,13 +2,11 @@ version: "3.8"
 
 services:
   server:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
+    image: python-react-time-tracker-server:latest
     networks:
       - postgres
     ports:
-      - 5000:5000
+      - 5055:5000
     environment:
       DB_NAME: postgres
       DB_HOST: postgres

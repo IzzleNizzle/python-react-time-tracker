@@ -9,6 +9,8 @@
         "installLint": "pip install flake8",
         "installFormatter": "pip install black",
         "installDeps": "pip install -r ${containerWorkspaceFolder}/app/requirements.txt",
+        "installXC": "go install github.com/joerdav/xc/cmd/xc@latest; xc -complete",
+        "installCaprover": "npm install -g caprover",
         "terraformAutocomplete": "terraform -install-autocomplete"
     },
     // For a list of devcontainer features:
@@ -19,6 +21,7 @@
             "enableNonRootDocker": "true",
             "moby": "true"
         },
+        "ghcr.io/devcontainers/features/go:1": {},
         "ghcr.io/devcontainers/features/node:1": {},
         "ghcr.io/devcontainers/features/python:1": {},
         "ghcr.io/devcontainers/features/terraform:1": {},

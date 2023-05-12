@@ -5,4 +5,4 @@ pytz
 pytest
 requests
 python-jose[cryptography]
-
+werkzeug
