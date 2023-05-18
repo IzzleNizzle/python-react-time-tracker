@@ -126,13 +126,6 @@ const DashboardPage = () => {
     return result;
   }
 
-
-  const dataAggregate = {
-    Gaming: '4hrs 15mins',
-    Break: '4hrs 20mins',
-    Work: '4hrs 20mins',
-  };
-
   return (
     <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>

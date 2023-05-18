@@ -42,6 +42,14 @@ export default function Chart({ graphData }) {
                 display: true,
                 text: 'Chart.js Bar Chart - Stacked',
             },
+            tooltip: {
+                callbacks: {
+                    footer: (tooltipItems) => {
+                        const seconds = tooltipItems[0].raw
+                        return getFormatedTimeFromSeconds(seconds)
+                    },
+                }
+            }
         },
         responsive: true,
         scales: {
@@ -52,16 +60,6 @@ export default function Chart({ graphData }) {
                 stacked: true,
             },
         },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    footer: (tooltipItems) => {
-                        const seconds = tooltipItems[0].raw
-                        return getFormatedTimeFromSeconds(seconds)
-                    },
-                }
-            }
-        }
     };
     const graphDataBuilder = (rawGraphData) => {
         const organizedGraphData = {
