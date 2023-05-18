@@ -16,6 +16,8 @@ SELECT activity,
         'day', time_tracker.time_tracker."date"
         )
     WHERE cognito_uuid = 'daa38dbb-ee91-4898-b48d-61031c5965ed'
+    AND activity != ''
+    AND (%(activity)s IS NULL OR activity = %(activity)s)
     GROUP BY activity,day
     ORDER BY day DESC;
     '''
