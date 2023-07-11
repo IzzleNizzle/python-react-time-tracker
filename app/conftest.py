@@ -1,11 +1,11 @@
 import pytest
 
 from psycopg2.extras import execute_values
-from app.postgres_request.postgres_db import (
+from postgres_request.postgres_db import (
     get_pg_connection,
     delete_table_data,
 )
-from app.postgres_request.postgres_queries import (
+from postgres_request.postgres_queries import (
     data_time_tracker,
     fill_time_tracker,
     fill_activity_list,

@@ -1,5 +1,5 @@
 from psycopg2.extras import execute_values
-from app.postgres_request.postgres_db import request_template, get_pg_connection
+from postgres_request.postgres_db import request_template, get_pg_connection
 
 
 def get_activity_list(uuid):

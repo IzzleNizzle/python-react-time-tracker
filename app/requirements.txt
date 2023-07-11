@@ -1,4 +1,5 @@
 flask
+gunicorn
 psycopg2-binary
 pandas
 pytz

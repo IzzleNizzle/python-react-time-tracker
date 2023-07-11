@@ -1,11 +1,11 @@
 import pytest
 
-from app.controllers.activity_list import (
+from controllers.activity_list import (
     clear_user_activity_list,
     update_user_activity_list,
     get_activity_list,
 )
-from app.postgres_request.postgres_db import request_template
+from postgres_request.postgres_db import request_template
 
 
 @pytest.mark.parametrize(
