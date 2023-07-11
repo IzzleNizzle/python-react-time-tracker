@@ -1,5 +1,5 @@
 from flask import Flask, session, redirect, render_template, request
-from app.postgres_request.postgres_db import request_template
+from postgres_request.postgres_db import request_template
 import pandas as pd
 
 

@@ -11,9 +11,9 @@ from flask import (
 from datetime import timedelta, datetime
 from werkzeug.utils import secure_filename
 
-from app.izauth.cognito import authenticate_with_cognito, logout
-from app.controllers.time_tracker import get_hourly, get_weekly, get_monthly
-from app.controllers.activity_list import update_user_activity_list, get_activity_list
+from izauth.cognito import authenticate_with_cognito, logout
+from controllers.time_tracker import get_hourly, get_weekly, get_monthly
+from controllers.activity_list import update_user_activity_list, get_activity_list
 
 session_lifetime = timedelta(days=1)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
