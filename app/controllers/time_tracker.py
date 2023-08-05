@@ -33,7 +33,7 @@ def get_hourly():
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
-        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
+        dates = date_to_est(data)
         data["activity"] = data["activity"].replace("", "None")
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
         data["weekday"] = weekday_series
@@ -87,7 +87,7 @@ def get_weekly():
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
-        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
+        dates = date_to_est(data)
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
         data["activity"] = data["activity"].replace("", "None")
         data["weekday"] = weekday_series
@@ -140,7 +140,7 @@ def get_monthly():
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
-        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
+        dates = date_to_est(data)
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%m-%d - %A")
         data["weekday"] = weekday_series
         data = data.rename(dates)
@@ -162,3 +162,10 @@ def get_monthly():
     except Exception as err:
         print(err)
         return "Bad Request", 400
+
+
+def date_to_est(df):
+    df["date"] = pd.to_datetime(df["date"])
+    df["date"] = df["date"].dt.tz_convert("US/Eastern")
+    df["date"] = df["date"].dt.strftime("%Y-%m-%d %H:%M:%S")
+    return df
