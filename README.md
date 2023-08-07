@@ -10,6 +10,13 @@ The following are the environment variables expected:
 see .devcontainer/devcontainer.env.bak
 
 
+## Installing Locally 
+
+Thanks to `setup.py` from the root directory, i can install the app in order to run tests without changing imports
+
+`pip install -e ./`
+
+
 ### Commands for building and deploying:
 
 docker build --tag pyre-time .

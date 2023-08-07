@@ -8,12 +8,15 @@ from flask import (
     render_template,
     request,
 )
+import logging
 from datetime import timedelta, datetime
 from werkzeug.utils import secure_filename
 
 from izauth.cognito import authenticate_with_cognito, logout
 from controllers.time_tracker import get_hourly, get_weekly, get_monthly
 from controllers.activity_list import update_user_activity_list, get_activity_list
+
+logging.getLogger().setLevel(logging.DEBUG)
 
 session_lifetime = timedelta(days=1)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
@@ -35,6 +38,7 @@ def serve(path):
 
 @app.route("/api/health")
 def hello_world():
+    logging.info("Health check")
     return "OK"
 
 
