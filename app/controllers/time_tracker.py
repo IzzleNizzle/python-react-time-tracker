@@ -1,9 +1,8 @@
-from flask import Flask, session, redirect, render_template, request
 from postgres_request.postgres_db import request_template
 import pandas as pd
 
 
-def get_hourly():
+def get_hourly(uuid):
     try:
         query = """
                 WITH latest_hours AS (
@@ -28,12 +27,13 @@ def get_hourly():
 
                 """
         params = (
-            session["uuid"],
-            session["uuid"],
+            uuid,
+            uuid,
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
-        dates = date_to_est(data)
+        data = date_to_est(data)
+        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
         data["activity"] = data["activity"].replace("", "None")
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
         data["weekday"] = weekday_series
@@ -57,7 +57,7 @@ def get_hourly():
         return "Bad Request", 400
 
 
-def get_weekly():
+def get_weekly(uuid):
     try:
         query = """
                 WITH latest_days AS (
@@ -82,8 +82,8 @@ def get_weekly():
 
                 """
         params = (
-            session["uuid"],
-            session["uuid"],
+            uuid,
+            uuid,
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
@@ -111,7 +111,7 @@ def get_weekly():
         return "Bad Request", 400
 
 
-def get_monthly():
+def get_monthly(uuid):
     try:
         query = """
                 WITH latest_days AS (
@@ -135,8 +135,8 @@ def get_monthly():
 
                 """
         params = (
-            session["uuid"],
-            session["uuid"],
+            uuid,
+            uuid,
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])

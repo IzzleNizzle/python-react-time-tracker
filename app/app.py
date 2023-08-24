@@ -81,11 +81,11 @@ def get_times(timeframe):
     try:
         match timeframe:
             case "hourly":
-                return get_hourly()
+                return get_hourly(session["uuid"])
             case "weekly":
-                return get_weekly()
+                return get_weekly(session["uuid"])
             case "monthly":
-                return get_monthly()
+                return get_monthly(session["uuid"])
             case _:
                 return "Bad Request", 400
     except Exception as err:
