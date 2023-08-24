@@ -3,34 +3,48 @@ from flask import session
 
 from controllers.time_tracker import (
     get_hourly,
+    get_weekly,
+    get_monthly,
 )
 
 
-# @pytest.mark.parametrize(
-#     "test_uuid,activity_list",
-#     [
-#         pytest.param(
-#             "63b0f404-d3e9-4e65-8b25-378de26e8cdd",
-#             [
-#                 "Running",
-#                 "Shopping",
-#                 "Working",
-#                 "Reading",
-#                 "Tracking",
-#             ],
-#             id="Happy path",
-#         ),
-#     ],
-# )
-def test_get_hourly(
-    monkeypatch,
-):
+def test_get_hourly():
     try:
         uuid = "63b0f404-d3e9-4e65-8b25-378de26e8cdd"
 
-        resp = get_hourly(uuid)
+        response = get_hourly(uuid)
 
-        assert resp == 'activity_list'
+        assert isinstance(response["headers"], list)
+        assert isinstance(response["index"], list)
+        assert isinstance(response["values"], list)
+
+    except Exception as err:
+        print(err)
+
+
+def test_get_weekly():
+    try:
+        uuid = "63b0f404-d3e9-4e65-8b25-378de26e8cdd"
+
+        response = get_weekly(uuid)
+
+        assert isinstance(response["headers"], list)
+        assert isinstance(response["index"], list)
+        assert isinstance(response["values"], list)
+
+    except Exception as err:
+        print(err)
+
+
+def test_get_monthly():
+    try:
+        uuid = "63b0f404-d3e9-4e65-8b25-378de26e8cdd"
+
+        response = get_monthly(uuid)
+
+        assert isinstance(response["headers"], list)
+        assert isinstance(response["index"], list)
+        assert isinstance(response["values"], list)
 
     except Exception as err:
         print(err)

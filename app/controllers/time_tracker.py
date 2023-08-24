@@ -87,7 +87,8 @@ def get_weekly(uuid):
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
-        dates = date_to_est(data)
+        data = date_to_est(data)
+        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%A")
         data["activity"] = data["activity"].replace("", "None")
         data["weekday"] = weekday_series
@@ -140,7 +141,8 @@ def get_monthly(uuid):
         )
         data = request_template(query, params)
         data = pd.DataFrame(data, columns=["activity", "count", "date"])
-        dates = date_to_est(data)
+        data = date_to_est(data)
+        dates = pd.to_datetime(data["date"]).dt.strftime("%y-%m-%d")
         weekday_series = pd.to_datetime(data["date"]).dt.strftime("%m-%d - %A")
         data["weekday"] = weekday_series
         data = data.rename(dates)
