@@ -8,6 +8,7 @@ from flask import (
     render_template,
     request,
 )
+import logging
 from datetime import timedelta, datetime
 from werkzeug.utils import secure_filename
 
@@ -15,7 +16,9 @@ from izauth.cognito import authenticate_with_cognito, logout
 from controllers.time_tracker import get_hourly, get_weekly, get_monthly
 from controllers.activity_list import update_user_activity_list, get_activity_list
 
-session_lifetime = timedelta(days=1)
+logging.getLogger().setLevel(logging.DEBUG)
+
+session_lifetime = timedelta(days=30)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 app.secret_key = os.environ.get("FLASK_SESSION_SECRET")
 app.permanent_session_lifetime = session_lifetime
@@ -35,6 +38,7 @@ def serve(path):
 
 @app.route("/api/health")
 def hello_world():
+    logging.info("Health check")
     return "OK"
 
 
@@ -77,11 +81,11 @@ def get_times(timeframe):
     try:
         match timeframe:
             case "hourly":
-                return get_hourly()
+                return get_hourly(session["uuid"])
             case "weekly":
-                return get_weekly()
+                return get_weekly(session["uuid"])
             case "monthly":
-                return get_monthly()
+                return get_monthly(session["uuid"])
             case _:
                 return "Bad Request", 400
     except Exception as err:
