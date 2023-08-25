@@ -18,7 +18,7 @@ from controllers.activity_list import update_user_activity_list, get_activity_li
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-session_lifetime = timedelta(days=1)
+session_lifetime = timedelta(days=30)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
 app.secret_key = os.environ.get("FLASK_SESSION_SECRET")
 app.permanent_session_lifetime = session_lifetime
