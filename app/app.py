@@ -14,7 +14,11 @@ from werkzeug.utils import secure_filename
 
 from izauth.cognito import authenticate_with_cognito, logout
 from controllers.time_tracker import get_hourly, get_weekly, get_monthly
-from controllers.activity_list import update_user_activity_list, get_activity_list
+from controllers.activity_list import (
+    update_user_activity_list,
+    get_activity_list,
+)
+from postgres_request.postgres_queries import insert_time_record
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -27,7 +31,6 @@ app.config["SESSION_PERMANENT"] = False
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
-@authenticate_with_cognito
 def serve(path):
     path = secure_filename(path)
     if path and os.path.exists(os.path.join(app.template_folder, path)):
@@ -59,10 +62,7 @@ def time_receive():
         if json_data["activity"] is None:
             return "Bad Request", 400
         cursor.execute(
-            """
-                INSERT INTO time_tracker.time_tracker (date, activity, cognito_uuid)
-                VALUES (%s, %s, %s);
-                """,
+            insert_time_record,
             (mtn_timestamp, json_data["activity"], session["uuid"]),
         )
         conn.commit()
