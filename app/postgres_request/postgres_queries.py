@@ -17,3 +17,8 @@ fill_time_tracker = (
 fill_activity_list = (
     "INSERT INTO time_tracker.activity_list (activity, cognito_uuid) VALUES %s"
 )
+
+insert_time_record = """
+    INSERT INTO time_tracker.time_tracker (date, activity, cognito_uuid)
+    VALUES (%s, %s, %s);
+                """
