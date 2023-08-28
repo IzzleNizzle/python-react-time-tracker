@@ -40,6 +40,11 @@ def serve(path):
         return render_template("index.html")
 
 
+@app.route("/manifest.json")
+def manifest():
+    return send_from_directory(app.template_folder, "manifest.json")
+
+
 @app.route("/api/health")
 def hello_world():
     logging.info("Health check")
