@@ -31,6 +31,7 @@ app.config["SESSION_PERMANENT"] = False
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
+@authenticate_with_cognito
 def serve(path):
     path = secure_filename(path)
     if path and os.path.exists(os.path.join(app.template_folder, path)):
