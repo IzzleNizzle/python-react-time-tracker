@@ -8,7 +8,7 @@ WORKDIR /app
 COPY ./client/package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm i
 
 # Copy the rest of the source code
 COPY ./client .
@@ -16,7 +16,7 @@ COPY ./client .
 # Build the React app
 RUN npm run build
 
-FROM python:3.11.3
+FROM python:3.11.3-slim
 
 WORKDIR /app
 
