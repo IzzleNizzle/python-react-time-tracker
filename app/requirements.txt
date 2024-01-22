@@ -7,3 +7,5 @@ pytest
 requests
 python-jose[cryptography]
 werkzeug
+flask-socketio
+eventlet

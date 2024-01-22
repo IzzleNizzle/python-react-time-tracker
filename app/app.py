@@ -19,6 +19,7 @@ from controllers.activity_list import (
     get_activity_list,
 )
 from postgres_request.postgres_queries import insert_time_record
+from flask_socketio import SocketIO
 
 logging.getLogger().setLevel(logging.DEBUG)
 
@@ -27,6 +28,17 @@ app = Flask(__name__, static_folder="build/static", template_folder="build")
 app.secret_key = os.environ.get("FLASK_SESSION_SECRET")
 app.permanent_session_lifetime = session_lifetime
 app.config["SESSION_PERMANENT"] = False
+socketio = SocketIO(app)
+
+
+@socketio.on("connect")
+def handle_connect():
+    print("Client connected")
+
+
+@socketio.on("message")
+def handle_message(data):
+    print("Received message: " + data)
 
 
 @app.route("/", defaults={"path": ""})
@@ -142,3 +154,7 @@ def get_time_stamp():
     timestamp = datetime.now()
     print(timestamp)
     return timestamp
+
+
+if __name__ == "__main__":
+    socketio.run(app, debug=True)
