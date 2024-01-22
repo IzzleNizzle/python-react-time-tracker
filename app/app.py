@@ -28,7 +28,7 @@ app = Flask(__name__, static_folder="build/static", template_folder="build")
 app.secret_key = os.environ.get("FLASK_SESSION_SECRET")
 app.permanent_session_lifetime = session_lifetime
 app.config["SESSION_PERMANENT"] = False
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 @socketio.on("connect")
