@@ -33,11 +33,13 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 @socketio.on("connect")
 def handle_connect():
+    logging.info("socketio.on(connect")
     print("Client connected")
 
 
 @socketio.on("message")
 def handle_message(data):
+    logging.info("socketio.on(message")
     print("Received message: " + data)
 
 
