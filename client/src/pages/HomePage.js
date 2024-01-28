@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -13,6 +13,9 @@ import { useStopwatch } from 'react-timer-hook';
 import { useSnackbar } from 'notistack';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import { io } from 'socket.io-client';
+
+
 
 export default function HomePage() {
     const [activity, setActivity] = useState('');
@@ -24,6 +27,31 @@ export default function HomePage() {
         setActivity(event.target.value);
         setChangedTime(Date.now());
     };
+
+    const [socket, setSocket] = useState(null)
+    const activityRef = useRef(activity);
+
+    useEffect(() => {
+        activityRef.current = activity;
+    }, [activity]);
+
+    useEffect(() => {
+        if (!socket) {
+            setSocket(io({ secure: false, }))
+        }
+        if (socket) {
+            socket.on('connect', () => {
+                console.log("socket.on Connected")
+            })
+
+            socket.on('color_change', (newColor) => {
+                console.log('socket hit', newColor);
+                activityRef.current && enqueueSnackbar(`Activity: ${activityRef.current}. ${timeDifference(Date.now(), changedTime)}`);
+                setActivity(newColor);
+                setChangedTime(Date.now());
+            });
+        }
+    }, [socket])
 
     const calcSecondsDistance = (timestamp1, timestamp2) => {
         const difference = Math.abs(timestamp1 - timestamp2);
@@ -68,7 +96,9 @@ export default function HomePage() {
             console.error(error);
             window.location.reload();
         });
-    }, [seconds, activity]);
+    }, [
+        // seconds, activity
+    ]);
 
 
     const chooseBackgroundColor = () => {
