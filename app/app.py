@@ -37,10 +37,11 @@ def handle_connect():
     print("Client connected")
 
 
-@socketio.on("message")
-def handle_message(data):
-    logging.info("socketio.on(message")
-    print("Received message: " + data)
+@socketio.on("color_change")
+def handle_color_change(color):
+    print(f"Received color change: {color}")
+    # Broadcast to all clients
+    socketio.emit("color_change", color)
 
 
 @app.route("/", defaults={"path": ""})
@@ -159,4 +160,5 @@ def get_time_stamp():
 
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    port = int(os.environ.get("PORT", 3009))
+    socketio.run(app, host="0.0.0.0", port=port, debug=True)
