@@ -16,7 +16,7 @@ services:
       FLASK_SESSION_SECRET: supersecret
 
   postgres:
-    image: postgres
+    image: postgres:alpine3.19
     restart: always
     volumes:
       - ./postgresql:/docker-entrypoint-initdb.d
