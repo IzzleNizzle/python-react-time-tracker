@@ -37,11 +37,11 @@ def handle_connect():
     print("Client connected")
 
 
-@socketio.on("color_change")
-def handle_color_change(color):
-    print(f"Received color change: {color}")
+@socketio.on("activity_change")
+def handle_activity_change(activity):
+    print(f"Received activity change: {activity}")
     # Broadcast to all clients
-    socketio.emit("color_change", color)
+    socketio.emit("activity_change", activity)
 
 
 @app.route("/", defaults={"path": ""})

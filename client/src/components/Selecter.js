@@ -6,7 +6,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 
-export default function Selecter({ handleChange, activity, activities }) {
+export default function Selecter({ handleChange, activity, activities, selectedValue }) {
 
     return (
         <Box sx={{ minWidth: 120 }}>
@@ -15,6 +15,7 @@ export default function Selecter({ handleChange, activity, activities }) {
                 <RadioGroup
                     aria-labelledby="demo-radio-buttons-group-label"
                     name="radio-buttons-group"
+                    value={selectedValue}
                     onChange={handleChange}
                 >
                     {activities.map((act, index) => <FormControlLabel key={index} value={act} control={<Radio />} label={act} />)}

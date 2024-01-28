@@ -25,7 +25,9 @@ export default function HomePage() {
     const handleChange = (event) => {
         activity && enqueueSnackbar(`Activity: ${activity}. ${timeDifference(Date.now(), changedTime)}`);
         setActivity(event.target.value);
+        setSelectedValue(event.target.value);
         setChangedTime(Date.now());
+        socket.emit('activity_change', event.target.value);
     };
 
     const [socket, setSocket] = useState(null)
@@ -35,6 +37,18 @@ export default function HomePage() {
         activityRef.current = activity;
     }, [activity]);
 
+    const [selectedValue, setSelectedValue] = useState('');
+
+
+
+    const socketChangeEvent = (newActivity) => {
+        console.log('socket hit', newActivity);
+        activityRef.current && enqueueSnackbar(`Activity: ${activityRef.current}. ${timeDifference(Date.now(), changedTime)}`);
+        setActivity(newActivity);
+        setSelectedValue(newActivity);
+        setChangedTime(Date.now());
+    }
+
     useEffect(() => {
         if (!socket) {
             setSocket(io({ secure: false, }))
@@ -43,13 +57,7 @@ export default function HomePage() {
             socket.on('connect', () => {
                 console.log("socket.on Connected")
             })
-
-            socket.on('color_change', (newColor) => {
-                console.log('socket hit', newColor);
-                activityRef.current && enqueueSnackbar(`Activity: ${activityRef.current}. ${timeDifference(Date.now(), changedTime)}`);
-                setActivity(newColor);
-                setChangedTime(Date.now());
-            });
+            socket.on('activity_change', socketChangeEvent);
         }
     }, [socket])
 
@@ -97,7 +105,7 @@ export default function HomePage() {
             window.location.reload();
         });
     }, [
-        // seconds, activity
+        seconds, activity
     ]);
 
 
@@ -199,7 +207,9 @@ export default function HomePage() {
                         {activityList.length > 0 && <Selecter
                             handleChange={handleChange}
                             activity={activity}
-                            activities={activityList} />}
+                            activities={activityList}
+                            selectedValue={selectedValue}
+                        />}
 
                     </CardContent>
                 </Card>
