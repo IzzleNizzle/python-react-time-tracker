@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -13,6 +13,9 @@ import { useStopwatch } from 'react-timer-hook';
 import { useSnackbar } from 'notistack';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import { io } from 'socket.io-client';
+
+
 
 export default function HomePage() {
     const [activity, setActivity] = useState('');
@@ -22,8 +25,41 @@ export default function HomePage() {
     const handleChange = (event) => {
         activity && enqueueSnackbar(`Activity: ${activity}. ${timeDifference(Date.now(), changedTime)}`);
         setActivity(event.target.value);
+        setSelectedValue(event.target.value);
         setChangedTime(Date.now());
+        socket.emit('activity_change', event.target.value);
     };
+
+    const [socket, setSocket] = useState(null)
+    const activityRef = useRef(activity);
+
+    useEffect(() => {
+        activityRef.current = activity;
+    }, [activity]);
+
+    const [selectedValue, setSelectedValue] = useState('');
+
+
+
+    const socketChangeEvent = (newActivity) => {
+        console.log('socket hit', newActivity);
+        activityRef.current && enqueueSnackbar(`Activity: ${activityRef.current}. ${timeDifference(Date.now(), changedTime)}`);
+        setActivity(newActivity);
+        setSelectedValue(newActivity);
+        setChangedTime(Date.now());
+    }
+
+    useEffect(() => {
+        if (!socket) {
+            setSocket(io({ secure: false, }))
+        }
+        if (socket) {
+            socket.on('connect', () => {
+                console.log("socket.on Connected")
+            })
+            socket.on('activity_change', socketChangeEvent);
+        }
+    }, [socket])
 
     const calcSecondsDistance = (timestamp1, timestamp2) => {
         const difference = Math.abs(timestamp1 - timestamp2);
@@ -68,7 +104,9 @@ export default function HomePage() {
             console.error(error);
             window.location.reload();
         });
-    }, [seconds, activity]);
+    }, [
+        seconds, activity
+    ]);
 
 
     const chooseBackgroundColor = () => {
@@ -169,7 +207,9 @@ export default function HomePage() {
                         {activityList.length > 0 && <Selecter
                             handleChange={handleChange}
                             activity={activity}
-                            activities={activityList} />}
+                            activities={activityList}
+                            selectedValue={selectedValue}
+                        />}
 
                     </CardContent>
                 </Card>

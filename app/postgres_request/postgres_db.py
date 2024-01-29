@@ -4,11 +4,11 @@ from psycopg2 import pool, sql
 _conn_pool = pool.SimpleConnectionPool(
     0,
     100,
-    database=os.environ["DB_NAME"],
-    host=os.environ["DB_HOST"],
-    user=os.environ["DB_USER"],
-    password=os.environ["DB_PASS"],
-    port=os.environ["DB_PORT"],
+    database=os.getenv("DB_NAME", "postgres"),
+    host=os.getenv("DB_HOST", "localhost"),
+    user=os.getenv("DB_USER", "postgres"),
+    password=os.getenv("DB_PASS", "postgres"),
+    port=os.getenv("DB_PORT", "5432"),
 )
 
 
