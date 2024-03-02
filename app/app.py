@@ -190,7 +190,7 @@ def final_data_shaping(df_slices):
         final_data.append(
             {
                 "date": df_slices[i]["date"].iloc[0].strftime("%Y-%m-%d"),
-                "activity": df_slices[i].to_json(orient="records"),
+                "activitys": df_slices[i].to_json(orient="records"),
             }
         )
     return final_data
