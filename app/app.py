@@ -8,6 +8,7 @@ from flask import (
     render_template,
     request,
 )
+import pandas as pd
 import logging
 from datetime import timedelta, datetime
 from werkzeug.utils import secure_filename
@@ -17,11 +18,20 @@ from controllers.time_tracker import get_hourly, get_weekly, get_monthly
 from controllers.activity_list import (
     update_user_activity_list,
     get_activity_list,
+    get_sessions_list,
 )
 from postgres_request.postgres_queries import insert_time_record
 from flask_socketio import SocketIO
+from dotenv import load_dotenv
 
 logging.getLogger().setLevel(logging.DEBUG)
+
+if os.getenv("FLASK_DEBUG") == "1":
+    load_dotenv(".env")
+    print("Environment variables loaded from .env file.")
+else:
+    print("FLASK_DEBUG is not set to 1; .env file not loaded.")
+
 
 session_lifetime = timedelta(days=30)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
@@ -123,6 +133,67 @@ def get_activity_list_items():
     except Exception as err:
         print(err)
         return "Bad Request", 400
+
+
+@app.route("/api/sessions-list/<int:days_lookback>", methods=["GET"])
+@authenticate_with_cognito
+def get_sessions_list_items(days_lookback):
+    try:
+        if days_lookback is None:
+            return "Bad Request", 400
+        sessions_list = get_sessions_list(session["uuid"], days_lookback)
+        df = pd.DataFrame(
+            sessions_list, columns=["id", "date", "activity", "cognito_uuid"]
+        )
+        df_sorted = df.sort_values("date", ascending=False)
+        df_sorted["time_diff"] = df_sorted["date"].shift(1) - df_sorted["date"]
+        high_time_delta_rows = df_sorted[
+            df_sorted["time_diff"] > pd.Timedelta(minutes=15)
+        ]
+        high_delta_indexes = high_time_delta_rows.index.tolist()
+        newest_index = df_sorted["date"].idxmax()
+        lowest_index = 0
+        session_index_tuples = list_to_tuples(
+            high_delta_indexes, newest_index, lowest_index
+        )
+        session_slices = split_df_into_slices(df_sorted, session_index_tuples)
+        final_data = final_data_shaping(session_slices)
+        return {"data": final_data}
+    except Exception as err:
+        print(err)
+        return "Bad Request", 400
+
+
+def list_to_tuples(lst, newest_index, oldest_index):
+    return [
+        (
+            (newest_index, lst[i])
+            if i == 0
+            else (lst[i], lst[i + 1] if i + 1 < len(lst) else oldest_index)
+        )
+        for i in range(len(lst))
+    ]
+
+
+def split_df_into_slices(df, slice_index_tuples):
+    df_slices = []
+    for i in range(0, len(slice_index_tuples), 1):
+        df_slices.append(
+            df.loc[(slice_index_tuples[i][0]) : (slice_index_tuples[i][1] + 1)]
+        )
+    return df_slices
+
+
+def final_data_shaping(df_slices):
+    final_data = []
+    for i in range(0, len(df_slices), 1):
+        final_data.append(
+            {
+                "date": df_slices[i]["date"].iloc[0].strftime("%Y-%m-%d"),
+                "activity": df_slices[i].to_json(orient="records"),
+            }
+        )
+    return final_data
 
 
 @app.route("/api/activity-list", methods=["POST"])

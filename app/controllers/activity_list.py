@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from psycopg2.extras import execute_values
 from postgres_request.postgres_db import request_template, get_pg_connection
 
@@ -10,6 +11,20 @@ def get_activity_list(uuid):
     params = (uuid,)
     data = request_template(query, params)
     return [activity[0] for activity in data]
+
+
+def get_sessions_list(uuid, days_lookback):
+    current_date = datetime.now().date()
+    start_date = current_date - timedelta(days=days_lookback)
+    query = f"""
+        SELECT *
+        FROM time_tracker.time_tracker
+        WHERE cognito_uuid = %s
+        AND date >= %s;
+    """
+    params = (uuid, start_date)
+    data = request_template(query, params)
+    return data
 
 
 def update_user_activity_list(uuid, activity_list):

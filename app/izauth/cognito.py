@@ -42,7 +42,7 @@ def authenticate_with_cognito(func):
 
     @wraps(func)
     def plain_wrapper(*args, **kwargs):
-        session["uuid"] = "63b0f404-d3e9-4e65-8b25-378de26e8cdd"
+        session["uuid"] = "daa38dbb-ee91-4898-b48d-61031c5965ed"
         return func(*args, **kwargs)
 
     if ENVIRONMENT == "production":
