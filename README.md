@@ -25,7 +25,7 @@ docker tag pyre-time:0.0.2 container-registry.url/pyre-time:0.0.2
 
 (If running on amd, wanting to push to x86)
 (docker buildx create --use)
-docker buildx build --platform linux/arm,linux/amd64 -t container-registry.url/pyre-time:0.0.2 --push .
+docker buildx build --platform linux/arm,linux/amd64 -t docker.io/izzlenizzle/pyre-time:0.0.1 --push .
 
 docker push container-registry.url/pyre-time:0.0.2
 
