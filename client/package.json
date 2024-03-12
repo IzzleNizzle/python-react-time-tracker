@@ -2,7 +2,7 @@
   "name": "timetracker",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://172.17.0.1:3009",
+  "proxy": "http://172.17.0.1:5050",
   "homepage": "https://time.concept.izzlenizzle.dev",
   "dependencies": {
     "@cubejs-client/core": "^0.31.35",

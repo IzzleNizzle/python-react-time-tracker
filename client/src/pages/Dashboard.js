@@ -67,6 +67,28 @@ const DashboardPage = () => {
 
 
   useEffect(() => {
+    fetch(`/api/sessions-list/30`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+    })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res)
+        // setGraphData(res)
+        // setPlainRenderDataSingle(singleDataFactory(res))
+        // setPlainRenderDataTotal(dataAggregateFactory(res))
+      })
+      .catch(error => {
+        console.error(error)
+      });
+  }, [])
+
+
+  useEffect(() => {
     fetch(`/api/time/${timeFrame}`, {
       method: 'GET',
       headers: {

@@ -7,14 +7,14 @@ import time
 from jose import jwk, jwt
 from jose.utils import base64url_decode
 
-LOGIN_REDIRECT_URL = os.environ.get("LOGIN_URL")
-COGNITO_CLIENT_ID = os.environ.get("COGNITO_CLIENT_ID")
-COGNITO_APP_DOMAIN = os.environ.get("COGNITO_APP_DOMAIN")
-COGNITO_CLIENT_SECRET = os.environ.get("COGNITO_CLIENT_SECRET")
-COGNITO_APP_REGION = os.environ.get("COGNITO_APP_REGION")
-REDIRECT_URL = os.environ.get("REDIRECT_URL")
-COGNITO_USERPOOL_ID = os.environ.get("COGNITO_USERPOOL_ID")
-ENVIRONMENT = os.environ.get("ENVIRONMENT")
+LOGIN_REDIRECT_URL = os.getenv("LOGIN_URL", "https://example.com/login")
+COGNITO_CLIENT_ID = os.getenv("COGNITO_CLIENT_ID", "your-client-id")
+COGNITO_APP_DOMAIN = os.getenv("COGNITO_APP_DOMAIN", "your-app-domain")
+COGNITO_CLIENT_SECRET = os.getenv("COGNITO_CLIENT_SECRET", "your-client-secret")
+COGNITO_APP_REGION = os.getenv("COGNITO_APP_REGION", "your-app-region")
+REDIRECT_URL = os.getenv("REDIRECT_URL", "https://example.com/callback")
+COGNITO_USERPOOL_ID = os.getenv("COGNITO_USERPOOL_ID", "your-userpool-id")
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 
 def authenticate_with_cognito(func):

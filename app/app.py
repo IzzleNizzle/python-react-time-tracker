@@ -26,16 +26,15 @@ from dotenv import load_dotenv
 
 logging.getLogger().setLevel(logging.DEBUG)
 
-if os.getenv("FLASK_DEBUG") == "1":
-    load_dotenv(".env")
+if load_dotenv(".env"):
     print("Environment variables loaded from .env file.")
 else:
-    print("FLASK_DEBUG is not set to 1; .env file not loaded.")
+    print("Failed to load environment variables from .env file.")
 
 
 session_lifetime = timedelta(days=30)
 app = Flask(__name__, static_folder="build/static", template_folder="build")
-app.secret_key = os.environ.get("FLASK_SESSION_SECRET")
+app.secret_key = os.getenv("FLASK_SESSION_SECRET", "default_secret_key")
 app.permanent_session_lifetime = session_lifetime
 app.config["SESSION_PERMANENT"] = False
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -81,11 +80,11 @@ def hello_world():
 def time_receive():
     try:
         conn = psycopg2.connect(
-            database=os.environ["DB_NAME"],
-            host=os.environ["DB_HOST"],
-            user=os.environ["DB_USER"],
-            password=os.environ["DB_PASS"],
-            port=os.environ["DB_PORT"],
+            database=os.getenv("DB_NAME", "default_db_name"),
+            host=os.getenv("DB_HOST", "default_db_host"),
+            user=os.getenv("DB_USER", "default_db_user"),
+            password=os.getenv("DB_PASS", "default_db_password"),
+            port=os.getenv("DB_PORT", "default_db_port"),
         )
         json_data = request.get_json()
         cursor = conn.cursor()
@@ -231,5 +230,5 @@ def get_time_stamp():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 3009))
+    port = int(os.getenv("PORT", 5001))
     socketio.run(app, host="0.0.0.0", port=port, debug=True)
